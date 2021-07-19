@@ -42,4 +42,8 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.14.1'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.0'
 }
