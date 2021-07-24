@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignupFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:text="新規登録"
+        android:textAlignment="center"
+        android:textSize="50sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ユーザーID"
+        android:textSize="30sp"
+        android:translationY="120dp" />
+
+    <EditText
+        android:id="@+id/userIdNameTextEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ユーザーID"
+        android:textSize="24sp"
+        android:translationY="160dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ニックネーム"
+        android:textSize="30sp"
+        android:translationY="220dp" />
+
+    <EditText
+        android:id="@+id/userNameTextEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ニックネーム"
+        android:textSize="24sp"
+        android:translationY="270dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="パスワード"
+        android:textSize="30sp"
+        android:translationY="330dp" />
+
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="パスワード"
+        android:inputType="textPassword"
+        android:textSize="24sp"
+        android:translationY="380dp" />
+
+    <EditText
+        android:id="@+id/oneMorePassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="パスワード（もう一度）"
+        android:inputType="textPassword"
+        android:textSize="24sp"
+        android:translationY="430dp" />
+
+    <Button
+        android:id="@+id/signupButton"
+        android:layout_width="189dp"
+        android:layout_height="77dp"
+        android:text="新規登録"
+        android:textSize="20sp"
+        android:translationX="112dp"
+        android:translationY="500dp" />
+
+    <TextView
+        android:id="@+id/loginTextView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="既存のアカウントでログインする"
+        android:textAlignment="center"
+        android:textColor="@color/purple_700"
+        android:textSize="20"
+        android:translationY="580dp"/>
+
+</FrameLayout>

@@ -70,7 +70,7 @@ class RestTemplateErrorHandler private constructor() {
                 if (httpStatusCode == HTTP_UNAUTHORIZED)
                     throw InvalidLoginException(errorResponse.message)
                 else
-                    throw HttpException(errorResponse.message)
+                    throw HttpException(errorResponse.message, httpStatusCode)
             }
         }
     }

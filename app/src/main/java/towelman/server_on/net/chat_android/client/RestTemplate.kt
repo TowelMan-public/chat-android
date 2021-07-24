@@ -6,6 +6,8 @@ import okhttp3.MediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import towelman.server_on.net.chat_android.client.exception.NetworkOfflineException
+import java.io.IOException
 
 /**
  * 外部からAPIを呼び出すのを支援するクラス。
@@ -42,8 +44,12 @@ class RestTemplate private constructor() {
             .post(requestBody)
             .build()
 
-        val response = client.newCall(request).execute()
-        restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
+        try {
+            val response = client.newCall(request).execute()
+            restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
+        }catch (_ : IOException){
+            throw NetworkOfflineException()
+        }
     }
 
     /**
@@ -55,17 +61,20 @@ class RestTemplate private constructor() {
      * @param parameter リクエストパラメター
      * @return レスポンス
      */
-    fun <Parameter, Response>getWhenLogined(oauthToken: String, url: String, parameter: Parameter): Response{
+    fun <Parameter, Response>getWhenLogined(oauthToken: String, url: String, parameter: Parameter): Response {
         val request = Request.Builder()
             .url(url + createRequestParameterUrl(parameter))
             .header(OAUTH_HEADER_NAME, oauthToken)
             .get()
             .build()
 
-        val response = client.newCall(request).execute()
-        restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
-
-        return objectMapper.readValue<Response>(response.toString(), object : TypeReference<Response>() {})
+        try {
+            val response = client.newCall(request).execute()
+            restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
+            return objectMapper.readValue<Response>(response.toString(),object : TypeReference<Response>() {})
+        } catch (_ : IOException){
+            throw NetworkOfflineException()
+        }
     }
 
     /**
@@ -82,8 +91,12 @@ class RestTemplate private constructor() {
             .post(requestBody)
             .build()
 
-        val response = client.newCall(request).execute()
-        restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
+        try {
+            val response = client.newCall(request).execute()
+            restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
+        } catch (_ : IOException){
+            throw NetworkOfflineException()
+        }
     }
 
     /**
@@ -101,10 +114,13 @@ class RestTemplate private constructor() {
             .post(requestBody)
             .build()
 
-        val response = client.newCall(request).execute()
-        restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
-
-        return response.toString()
+        try {
+            val response = client.newCall(request).execute()
+            restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
+            return response.toString()
+        } catch (_ : IOException){
+            throw NetworkOfflineException()
+        }
     }
 
     /**

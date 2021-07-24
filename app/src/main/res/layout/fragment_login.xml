@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textAlignment="center"
+    tools:context=".LoginFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:text="ログイン"
+        android:textAlignment="center"
+        android:textSize="50sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ユーザーID"
+        android:textSize="30sp"
+        android:translationY="120dp" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/userIdNameTextEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ユーザーID"
+        android:textSize="24sp"
+        android:translationY="160dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="パスワード"
+        android:textSize="30sp"
+        android:translationY="220dp" />
+
+    <EditText
+        android:id="@+id/passwordTextEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="パスワード"
+        android:inputType="textPassword"
+        android:textSize="24sp"
+        android:translationY="260dp" />
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="189dp"
+        android:layout_height="77dp"
+        android:text="ログイン"
+        android:textSize="20sp"
+        android:translationX="112dp"
+        android:translationY="350dp" />
+
+    <TextView
+        android:id="@+id/signupTextView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:text="新しくユーザーを登録する"
+        android:textAlignment="center"
+        android:textColor="@color/purple_700"
+        android:textSize="20"
+        android:translationY="430dp"/>
+
+
+</FrameLayout>
