@@ -1,7 +1,14 @@
 package towelman.server_on.net.chat_android.validate
 
+import java.util.*
+
+/**
+ * 1組のEditTextクラス向けのバリデーションチェックを管理するクラス
+ */
 class EditTextValidateManager {
     private val editTextValidatorList:  MutableList<EditTextValidator> = mutableListOf()
+
+
 
     /**
      *バリデーションチェックを追加する

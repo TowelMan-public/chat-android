@@ -1,5 +1,7 @@
 package towelman.server_on.net.chat_android.handler
 
+import java.util.*
+
 /**
  * 例外ハンドラーたちの集まり（List）<br>
  * また、Exceptionに抽象化された例外を元に各登録されている例外ハンドラーたちでハンドリングするクラス。<br>
@@ -10,6 +12,8 @@ open class ExceptionHandlingList {
 
     /**
      * 例外ハンドラーを単体で追加する
+     *
+     * @param exceptionHandler 例外ハンドラー
      */
     fun add(exceptionHandler: ExceptionHandlerInterface){
         exceptionHandlerList += mutableListOf(exceptionHandler)
@@ -17,9 +21,13 @@ open class ExceptionHandlingList {
 
     /**
      * 例外ハンドラーをListで追加する
+     *
+     * @param exceptionHandlingList 例外ハンドラーのListクラス（ExceptionHandlingList）
      */
     fun add(exceptionHandlingList: ExceptionHandlingList){
-        exceptionHandlerList += exceptionHandlingList.exceptionHandlerList
+        for (it in exceptionHandlingList.exceptionHandlerList) {
+            exceptionHandlerList += exceptionHandlingList.exceptionHandlerList
+        }
     }
 
     /**
@@ -37,6 +45,12 @@ open class ExceptionHandlingList {
         }
     }
 
+    /**
+     * +演算子のオーバーロード
+     *
+     * @param exceptionHandler エラーハンドラー
+     * @return 例外ハンドラーのListクラス（ExceptionHandlingList）
+     */
     operator fun plus(exceptionHandler: ExceptionHandlerInterface): ExceptionHandlingList{
         val newExceptionHandlingList = ExceptionHandlingList()
         newExceptionHandlingList.add(this)
@@ -44,6 +58,12 @@ open class ExceptionHandlingList {
         return newExceptionHandlingList
     }
 
+    /**
+     * +演算子のオーバーロード
+     *
+     * @param exceptionHandlingList 例外ハンドラーのListクラス（ExceptionHandlingList）
+     * @return 例外ハンドラーのListクラス（ExceptionHandlingList）
+     */
     operator fun plus(exceptionHandlingList: ExceptionHandlingList): ExceptionHandlingList{
         val newExceptionHandlingList = ExceptionHandlingList()
         newExceptionHandlingList.add(this)
@@ -51,10 +71,20 @@ open class ExceptionHandlingList {
         return newExceptionHandlingList
     }
 
+    /**
+     * +=演算子のオーバーロード
+     *
+     * @param exceptionHandler エラーハンドラー
+     */
     operator fun plusAssign(exceptionHandler: ExceptionHandlerInterface){
         add(exceptionHandler)
     }
 
+    /**
+     * +=演算子のオーバーロード
+     *
+     * @param exceptionHandlingList 例外ハンドラーのListクラス（ExceptionHandlingList）
+     */
     operator fun plusAssign(exceptionHandlingList: ExceptionHandlingList){
         add(exceptionHandlingList)
     }

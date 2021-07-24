@@ -7,9 +7,15 @@ import towelman.server_on.net.chat_android.client.exception.NotFoundException
 import towelman.server_on.net.chat_android.client.exception.NotHaveUserException
 
 /**
- * 友達トークに関するAPIを呼び出すクラス
+ * 友達トークに関するAPIを呼び出すクラス<br>
+ * このクラスは部品の集まりとして使う。
  */
-class DialogueApi {
+class DialogueApi
+/**
+ * このクラスを生成不能にするためのコンストラクタ
+ */
+private constructor() {
+
     companion object {
         private const val ROOT_URL: String = ApiUrlRootConfig.ROOT_URL + "/diarogue"
         private var restTemplate = RestTemplate.getInstance()

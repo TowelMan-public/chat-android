@@ -8,9 +8,15 @@ import towelman.server_on.net.chat_android.client.exception.NotJoinGroupExceptio
 
 
 /**
- * グループに関するAPIを呼び出すクラス
+ * グループに関するAPIを呼び出すクラス<br>
+ * このクラスは部品の集まりとして使う。
  */
-class GroupApi {
+class GroupApi
+/**
+ * このクラスを生成不能にするためのコンストラクタ
+ */
+private constructor() {
+
     companion object {
         private const val ROOT_URL: String = ApiUrlRootConfig.ROOT_URL + "/group"
         private var restTemplate = RestTemplate.getInstance()

@@ -5,9 +5,15 @@ import towelman.server_on.net.chat_android.client.entity.DesireHaveUserResponse
 import towelman.server_on.net.chat_android.client.exception.NotFoundException
 
 /**
- * 友達追加申請に関するAPIを呼び出すクラス
+ * 友達追加申請に関するAPIを呼び出すクラス<br>
+ * このクラスは部品の集まりとして使う。
  */
-class DesireUserApi {
+class DesireUserApi
+/**
+ * このクラスを生成不能にするためのコンストラクタ
+ */
+private constructor() {
+
     companion object {
         private const val ROOT_URL: String = ApiUrlRootConfig.ROOT_URL + "/desire/user"
         private var restTemplate = RestTemplate.getInstance()

@@ -8,9 +8,15 @@ import towelman.server_on.net.chat_android.client.exception.NotHaveUserException
 
 
 /**
- * ユーザーが持っている友達に関するAPIを呼び出すクラス
+ * ユーザーが持っている友達に関するAPIを呼び出すクラス<br>
+ * このクラスは部品の集まりとして使う。
  */
-class UserInDialogueApi {
+class UserInDialogueApi
+/**
+ * このクラスを生成不能にするためのコンストラクタ
+ */
+private constructor() {
+
     companion object {
         private const val ROOT_URL: String = ApiUrlRootConfig.ROOT_URL + "/diarogue/user"
         private var restTemplate = RestTemplate.getInstance()

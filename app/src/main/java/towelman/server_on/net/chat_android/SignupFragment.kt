@@ -19,17 +19,25 @@ import towelman.server_on.net.chat_android.validate.*
 
 
 /**
+ * ユーザーの新規登録用のFragment
  * A simple [Fragment] subclass.
  * Use the [SignupFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
 class SignupFragment : Fragment() {
+    /**
+     * このFragmentのActivityにアクセスしやすいようにするためのプロパティー
+     */
+    private val loginAndSignupActivity: LoginAndSignupActivity
+        get() = (activity as LoginAndSignupActivity)
 
-    private var loginAndSignupActivity: LoginAndSignupActivity? = null
-
+    /**
+     * このFragmentが生成されたときの処理
+     *
+     * @param savedInstanceState このActivityで保持するべき情報・状態
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loginAndSignupActivity = (activity as LoginAndSignupActivity)
 
         //各必要なViewの取得
         val userIdNameTextEdit = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
@@ -64,17 +72,24 @@ class SignupFragment : Fragment() {
         signupButton.setOnClickListener {
             //入力ﾁｪｯｸ
             if (signupValidateManager.doValidateList())
-                loginAndSignupActivity!!.showValidationAlertDialogue()
+                loginAndSignupActivity.showValidationAlertDialogue()
 
             signup(userIdNameTextEdit.text.toString(), userNameTextEdit.text.toString(), passwordTextEdit.text.toString())
         }
 
         //ログインを提案する文字列のクリックイベント
         loginTextView.setOnClickListener {
-            loginAndSignupActivity!!.showLoginFragment()
+            loginAndSignupActivity.showLoginFragment()
         }
     }
 
+    /**
+     * このFragmentのUI等を生成するときの処理
+     *
+     * @param inflater 配置等を管理するやつ
+     * @param container このFragmentを配置する場所
+     * @param savedInstanceState このActivityで保持するべき情報・状態
+     */
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
@@ -83,11 +98,18 @@ class SignupFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_signup, container, false)
     }
 
+    /**
+     * ユーザーの新規登録をする
+     *
+     * @param userIdName ユーザーID名
+     * @param userName ユーザー名
+     * @param password パスワード
+     */
     private fun signup(userIdName: String, userName: String, password: String) {
         //例外ハンドラーの作成
-        val handlerList = loginAndSignupActivity!!.getCoroutineExceptionHandler()
+        val handlerList = loginAndSignupActivity.getCoroutineExceptionHandler()
         handlerList += ExceptionHandler<AlreadyUsedUserIdNameException>{
-            AlertDialog.Builder(loginAndSignupActivity!!)
+            AlertDialog.Builder(loginAndSignupActivity)
                 .setTitle("失敗")
                 .setMessage("あなたが指定したユーザーIDは既に使われています。ほかのものをご検討ください。")
                 .setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
@@ -95,11 +117,11 @@ class SignupFragment : Fragment() {
         }
 
         //処理
-        CoroutineScope(loginAndSignupActivity!!.coroutineContext).launch(handlerList.createCoroutineExceptionHandler()) {
+        CoroutineScope(loginAndSignupActivity.coroutineContext).launch(handlerList.createCoroutineExceptionHandler()) {
             withContext(Dispatchers.Default) {
                 UserRestService.signup(userIdName, userName, password)
             }
-            loginAndSignupActivity!!.showLoginFragment()
+            loginAndSignupActivity.showLoginFragment()
         }
     }
 

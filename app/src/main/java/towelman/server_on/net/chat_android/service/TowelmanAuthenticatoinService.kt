@@ -5,6 +5,9 @@ import android.content.Intent
 import android.os.IBinder
 import towelman.server_on.net.chat_android.account.TowelmanAuthenticatoin
 
+/**
+ * このアプリでAccountManagerとTowelmanAuthenticatoinを紐図けるサービスクラス
+ */
 class TowelmanAuthenticatoinService: Service() {
     private var mAuthenticator: TowelmanAuthenticatoin? = null
 

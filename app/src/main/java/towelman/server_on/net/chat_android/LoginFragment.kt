@@ -30,16 +30,25 @@ import towelman.server_on.net.chat_android.validate.NotBlankValidatable
 
 
 /**
+ * ログイン用のFragment<br>
  * A simple [Fragment] subclass.
  * Use the [LoginFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
 class LoginFragment : Fragment() {
-    private var loginAndSignupActivity: LoginAndSignupActivity? = null
+    /**
+     * このFragmentのActivityにアクセスしやすいようにするためのプロパティー
+     */
+    private val loginAndSignupActivity: LoginAndSignupActivity
+        get() = (activity as LoginAndSignupActivity)
 
+    /**
+     * このFragmentが生成されたときの処理
+     *
+     * @param savedInstanceState このActivityで保持するべき情報・状態
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loginAndSignupActivity = (activity as LoginAndSignupActivity)
 
         //各必要なViewの取得
         val userIdNameTextEdit = view!!.findViewById<TextInputEditText>(R.id.userIdNameTextEdit)
@@ -63,17 +72,24 @@ class LoginFragment : Fragment() {
         loginButton.setOnClickListener {
             //入力ﾁｪｯｸ
             if (loginValidateManager.doValidateList())
-                loginAndSignupActivity!!.showValidationAlertDialogue()
+                loginAndSignupActivity.showValidationAlertDialogue()
 
-            login(userIdNameTextEdit.text.toString(), passwordTextEdit.text.toString());
+            login(userIdNameTextEdit.text.toString(), passwordTextEdit.text.toString())
         }
 
         //新規登録を提案する文字列のクリックイベント
         signupTextView.setOnClickListener {
-            loginAndSignupActivity!!.showSignupFragment()
+            loginAndSignupActivity.showSignupFragment()
         }
     }
 
+    /**
+     * このFragmentのUI等を生成するときの処理
+     *
+     * @param inflater 配置等を管理するやつ
+     * @param container このFragmentを配置する場所
+     * @param savedInstanceState このActivityで保持するべき情報・状態
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -82,11 +98,17 @@ class LoginFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
+    /**
+     * ログイン処理・この機種へのアカウント登録を行う関数
+     *
+     * @param userIdName ユーザーID名
+     * @param password パスワード
+     */
     private fun login(userIdName: String, password: String){
         //例外ハンドラーの作成
-        val handlerList = loginAndSignupActivity!!.getCoroutineExceptionHandler()
+        val handlerList = loginAndSignupActivity.getCoroutineExceptionHandler()
         handlerList += ExceptionHandler<LoginException>{
-            AlertDialog.Builder(loginAndSignupActivity!!)
+            AlertDialog.Builder(loginAndSignupActivity)
                 .setTitle("失敗")
                 .setMessage("ログインに失敗しました。ユーザーIDとパスワードをご確認ください。")
                 .setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
@@ -94,13 +116,13 @@ class LoginFragment : Fragment() {
         }
 
         //処理
-        CoroutineScope(loginAndSignupActivity!!.coroutineContext).launch(handlerList.createCoroutineExceptionHandler()) {
+        CoroutineScope(loginAndSignupActivity.coroutineContext).launch(handlerList.createCoroutineExceptionHandler()) {
             withContext(Dispatchers.Default) {
                 UserRestService.login(userIdName, password)
             }
 
-            loginAndSignupActivity!!.accountManager.addAccount(userIdName, password)
-            loginAndSignupActivity!!.finish()
+            loginAndSignupActivity.accountManager.addAccount(userIdName, password)
+            loginAndSignupActivity.transitionMainActivity()
         }
     }
 

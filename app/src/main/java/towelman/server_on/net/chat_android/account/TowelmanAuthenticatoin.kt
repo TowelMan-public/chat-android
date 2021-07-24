@@ -11,8 +11,10 @@ import kotlinx.coroutines.withContext
 import towelman.server_on.net.chat_android.LoginAndSignupActivity
 import towelman.server_on.net.chat_android.client.api.UserApi
 
-
-class TowelmanAuthenticatoin(private val context: Context): AbstractAccountAuthenticator(context) {
+/**
+ * このアプリで使うAccountManagerで使う処理定義クラス。今回は役目を果たしてない、形だけのクラスである。
+ */
+class TowelmanAuthenticatoin(context: Context): AbstractAccountAuthenticator(context) {
 
     @Throws(NetworkErrorException::class)
     override fun addAccount(response: AccountAuthenticatorResponse?, accountType: String?,

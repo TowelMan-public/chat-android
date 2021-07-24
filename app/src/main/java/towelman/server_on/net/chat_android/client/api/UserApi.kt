@@ -6,9 +6,15 @@ import towelman.server_on.net.chat_android.client.exception.AlreadyUsedUserIdNam
 import towelman.server_on.net.chat_android.client.exception.NotFoundException
 
 /**
- * ユーザー情報に関するAPIを呼び出すクラス
+ * ユーザー情報に関するAPIを呼び出すクラス<br>
+ * このクラスは部品の集まりとして使う。
  */
-class UserApi {
+class UserApi
+/**
+ * このクラスを生成不能にするためのコンストラクタ
+ */
+private constructor() {
+
     companion object {
         private val ROOT_URL: String = ApiUrlRootConfig.ROOT_URL + "/user"
         private var restTemplate = RestTemplate.getInstance()

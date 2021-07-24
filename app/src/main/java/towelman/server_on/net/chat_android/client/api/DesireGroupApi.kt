@@ -6,9 +6,15 @@ import towelman.server_on.net.chat_android.client.entity.DesireUserInGroupRespon
 import towelman.server_on.net.chat_android.client.RestTemplate
 
 /**
- * グループ加入してほしい申請に関するAPIを呼び出すクラス
+ * グループ加入してほしい申請に関するAPIを呼び出すクラス<br>
+ * このクラスは部品の集まりとして使う。
  */
-class DesireGroupApi {
+class DesireGroupApi
+/**
+ * このクラスを生成不能にするためのコンストラクタ
+ */
+private constructor() {
+
     companion object {
         private const val ROOT_URL: String = ApiUrlRootConfig.ROOT_URL + "/desire/group"
 

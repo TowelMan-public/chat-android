@@ -1,6 +1,7 @@
 package towelman.server_on.net.chat_android
 
 import android.app.Activity
+import android.content.Intent
 import android.icu.text.DateTimePatternGenerator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,31 +15,53 @@ import towelman.server_on.net.chat_android.client.exception.NetworkOfflineExcept
 import towelman.server_on.net.chat_android.handler.ExceptionHandler
 import towelman.server_on.net.chat_android.handler.ExceptionHandlingListForCoroutine
 
+/**
+ * ログインとユーザーの新規登録（この機種にこのアプリで使うアカウントが登録されるまで）を担当するActivity
+ */
 class LoginAndSignupActivity : AppCompatActivity() {
+    /**
+     * このActivityの管理下で使うコルーチンのためのコンテキスト
+     */
     val coroutineContext = Dispatchers.Main + SupervisorJob()
-    val accountManager:AccountManagerAdapterForTowelman = AccountManagerAdapterForTowelman(this)
-    private var exceptionHandlingListForCoroutine: ExceptionHandlingListForCoroutine? = null
 
+    /**
+     * このActivityの管理下で使うAccountManagerAdapter
+     */
+    val accountManager:AccountManagerAdapterForTowelman = AccountManagerAdapterForTowelman(this)
+
+    /**
+     * このActivityが生成されたときの処理
+     *
+     * @param savedInstanceState このActivityで保持するべき情報・状態
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_and_signup)
-        exceptionHandlingListForCoroutine = createExceptionHandlingListForCoroutine()
 
         showLoginFragment()
     }
 
+    /**
+     * ログイン用のFragmentを表示させる
+     */
     fun showLoginFragment(){
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, LoginFragment.newInstance())
         transaction.commit()
     }
 
+    /**
+     * ユーザーの新規登録用のFragmentを表示させる
+     */
     fun showSignupFragment(){
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, SignupFragment.newInstance())
         transaction.commit()
     }
 
+    /**
+     * バリデーションチェックで引っかかった時のアラートメッセージを表示する
+     */
     fun showValidationAlertDialogue(){
         AlertDialog.Builder(this)
                 .setTitle("入力チェックエラー")
@@ -47,9 +70,11 @@ class LoginAndSignupActivity : AppCompatActivity() {
                 .show()
     }
 
-    fun getCoroutineExceptionHandler(): ExceptionHandlingListForCoroutine = exceptionHandlingListForCoroutine!!
-
-    private fun createExceptionHandlingListForCoroutine() :ExceptionHandlingListForCoroutine{
+    /**
+     * 処理をするときに行うべき必要最低限な、最終的な例外ハンドラーの集まりを取得する。<br>
+     * 大体これで取得した奴に、取得した側で必要な例外ハンドラーを追加して使う。
+     */
+    fun getCoroutineExceptionHandler(): ExceptionHandlingListForCoroutine {
         val handlerList = ExceptionHandlingListForCoroutine()
 
         handlerList += ExceptionHandler<Exception>{
@@ -69,12 +94,21 @@ class LoginAndSignupActivity : AppCompatActivity() {
                     .show()
         } + ExceptionHandler<NetworkOfflineException>{
             AlertDialog.Builder(this)
-                .setTitle("通信エラー")
-                .setMessage("ネットーワークで障害が発生しました。このエラーは本体がネットにつながってないと発生することがあります")
-                .setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
-                .show()
+                    .setTitle("通信エラー")
+                    .setMessage("ネットーワークで障害が発生しました。このエラーは本体がネットにつながってないと発生することがあります")
+                    .setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
+                    .show()
         }
 
         return handlerList
+    }
+
+    /**
+     * メインのActivityに画面遷移させるためのクラス
+     */
+    fun transitionMainActivity(){
+        val intent = Intent(application, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

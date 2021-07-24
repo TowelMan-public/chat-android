@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 
 /**
+ * ホーム画面の全体のFragment<br>
  * A simple [Fragment] subclass.
  * Use the [HomeFragment.newInstance] factory method to
  * create an instance of this fragment.
