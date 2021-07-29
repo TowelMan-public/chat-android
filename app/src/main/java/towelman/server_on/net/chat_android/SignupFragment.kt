@@ -33,19 +33,31 @@ class SignupFragment : Fragment() {
 
     /**
      * このFragmentが生成されたときの処理
+     * このFragmentの設定等
      *
      * @param savedInstanceState このActivityで保持するべき情報・状態
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+    /**
+     * このFragmentのViewたちが生成されたときときの処理
+     * このFragmentのViewたちの設定等
+     *
+     * @param view このFragmentのViewたち
+     * @param savedInstanceState このActivityで保持するべき情報・状態
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         //各必要なViewの取得
-        val userIdNameTextEdit = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
-        val userNameTextEdit = view!!.findViewById<EditText>(R.id.userNameTextEdit)
-        val passwordTextEdit = view!!.findViewById<EditText>(R.id.passwordTextEdit)
-        val oneMorePasswordTextEdit = view!!.findViewById<EditText>(R.id.oneMorePassword)
-        val signupButton = view!!.findViewById<Button>(R.id.signupButton)
-        val loginTextView = view!!.findViewById<TextView>(R.id.loginTextView)
+        val userIdNameTextEdit = view.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val userNameTextEdit = view.findViewById<EditText>(R.id.userNameTextEdit)
+        val passwordTextEdit = view.findViewById<EditText>(R.id.passwordTextEdit)
+        val oneMorePasswordTextEdit = view.findViewById<EditText>(R.id.oneMorePasswordTextEdit)
+        val signupButton = view.findViewById<Button>(R.id.signupButton)
+        val loginTextView = view.findViewById<TextView>(R.id.loginTextView)
 
         //新規登録のValidateManager生成
         val signupValidateManager = EditTextValidateManager().apply {
@@ -71,8 +83,10 @@ class SignupFragment : Fragment() {
         //新規登録ボタンのクリックイベント
         signupButton.setOnClickListener {
             //入力ﾁｪｯｸ
-            if (signupValidateManager.doValidateList())
+            if (signupValidateManager.doValidateList()) {
                 loginAndSignupActivity.showValidationAlertDialogue()
+                return@setOnClickListener
+            }
 
             signup(userIdNameTextEdit.text.toString(), userNameTextEdit.text.toString(), passwordTextEdit.text.toString())
         }
@@ -108,11 +122,11 @@ class SignupFragment : Fragment() {
     private fun signup(userIdName: String, userName: String, password: String) {
         //例外ハンドラーの作成
         val handlerList = loginAndSignupActivity.getCoroutineExceptionHandler()
-        handlerList += ExceptionHandler<AlreadyUsedUserIdNameException>{
+        handlerList += ExceptionHandler.newIncense<AlreadyUsedUserIdNameException>{
             AlertDialog.Builder(loginAndSignupActivity)
                 .setTitle("失敗")
                 .setMessage("あなたが指定したユーザーIDは既に使われています。ほかのものをご検討ください。")
-                .setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
+                //.setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
                 .show()
         }
 

@@ -11,7 +11,7 @@ class NotBlankValidatable: Validatable {
      * @return エラーメッセージ。nullならバリデーションチェック成功
      */
     override fun validate(text: String) : String?{
-        return if(text.isNotBlank())
+        return if(text.isBlank())
             "何か入力してください。空白はだめです。"
         else
             null

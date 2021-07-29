@@ -1,12 +1,14 @@
 package towelman.server_on.net.chat_android.handler
 
+import java.lang.reflect.ParameterizedType
+
 /**
  * 例外ハンドラー（単体）<br>
  * 1つの例外クラスに対する処理を定義し、実行させるクラスである<br>
- * コンストラクタの型引数に補足したい例外クラスを、その時に行いたい処理をラムダで引数に指定する
+ * newIncenseの型引数に補足したい例外クラスを、その時に行いたい処理をラムダで引数に指定して生成する<br>
+ * コンストラクタはアクセスできてしまうがコンストラクタをあまり使わないようにすること
  */
- class ExceptionHandler<E: Exception>(val handler: (exception: E)-> Unit): ExceptionHandlerInterface {
-
+class ExceptionHandler constructor(val runDelegate: (exception: Exception) -> Boolean) : ExceptionHandlerInterface {
     /**
      * 例外処理を実行する
      *
@@ -14,14 +16,27 @@ package towelman.server_on.net.chat_android.handler
      * @return このハンドラーで適切に処理されたかどうか。trueなら適切に処理されている。falseなら他のハンドラーを実行する必要がある
      */
     override fun handling(exception: Exception): Boolean {
-        //未検査キャストと警告が出るが問題ない
-        val eException = exception as E?
+        return runDelegate(exception)
+    }
 
-        return if (eException == null)
-            false
-        else {
-            handler(eException)
-            true
+    companion object{
+        /**
+         * 例外ハンドラー（単体）を生成する
+         *
+         * @param E 型引数に補足したい例外クラス
+         * @param runDelegate 行いたい処理（対象の例外が引数に渡される）
+         * @return 例外ハンドラー（単体）
+         */
+        @JvmStatic
+        inline fun <reified E> newIncense(crossinline runDelegate: (exception: E) -> Unit): ExceptionHandler{
+            return ExceptionHandler {
+                    if(it is E) {
+                        runDelegate(it)
+                        true
+                    }
+                    else
+                        false
+            }
         }
     }
 }

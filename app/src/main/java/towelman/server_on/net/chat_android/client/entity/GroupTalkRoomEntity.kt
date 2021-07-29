@@ -3,5 +3,16 @@ package towelman.server_on.net.chat_android.client.entity
 /**
  * グループトークルームを取得するAPIのエンティティー
  */
-data class GroupTalkRoomEntity(val talkRoomId: Int, val groupName: String,
-                               val lastTalkIndex: Int, val isEnabled: Boolean)
+class GroupTalkRoomEntity(){
+    var talkRoomId: Int = -1
+    var groupName: String = ""
+    var lastTalkIndex: Int = -1
+    var isEnabled: Boolean = false
+
+    constructor(talkRoomId: Int, groupName: String, lastTalkIndex: Int, isEnabled: Boolean) : this() {
+        this.talkRoomId = talkRoomId
+        this.groupName = groupName
+        this.lastTalkIndex = lastTalkIndex
+        this.isEnabled = isEnabled
+    }
+}

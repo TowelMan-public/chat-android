@@ -10,9 +10,9 @@ class NotFoundException(message: String) : RuntimeException(message) {
 
         //項目（ここではfieldName）を取得する
         val matcher = Pattern.compile(patternString)
-                .matcher(super.message)
+                .matcher(super.message.toString())
         matcher.matches()
-        return matcher.group(1)
+        return matcher.group(1)!!
     }
 
     fun isErrorFieldUserIdName(): Boolean {

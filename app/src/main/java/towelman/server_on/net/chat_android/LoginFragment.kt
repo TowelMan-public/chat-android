@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -44,17 +45,29 @@ class LoginFragment : Fragment() {
 
     /**
      * このFragmentが生成されたときの処理
+     * このFragmentの設定等
      *
      * @param savedInstanceState このActivityで保持するべき情報・状態
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+    }
+
+    /**
+     * このFragmentのViewたちが生成されたときときの処理
+     * このFragmentのViewたちの設定等
+     *
+     * @param view このFragmentのViewたち
+     * @param savedInstanceState このActivityで保持するべき情報・状態
+     */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         //各必要なViewの取得
-        val userIdNameTextEdit = view!!.findViewById<TextInputEditText>(R.id.userIdNameTextEdit)
-        val passwordTextEdit = view!!.findViewById<TextInputEditText>(R.id.passwordTextEdit)
-        val loginButton = view!!.findViewById<Button>(R.id.loginButton)
-        val signupTextView = view!!.findViewById<TextView>(R.id.signupTextView)
+        val userIdNameTextEdit = view.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val passwordTextEdit = view.findViewById<EditText>(R.id.passwordTextEdit)
+        val loginButton = view.findViewById<Button>(R.id.loginButton)
+        val signupTextView = view.findViewById<TextView>(R.id.signupTextView)
 
         //ログインのValidateManager生成
         val loginValidateManager = EditTextValidateManager().apply {
@@ -71,8 +84,10 @@ class LoginFragment : Fragment() {
         //ログインボタンのクリックイベント
         loginButton.setOnClickListener {
             //入力ﾁｪｯｸ
-            if (loginValidateManager.doValidateList())
+            if (loginValidateManager.doValidateList()) {
                 loginAndSignupActivity.showValidationAlertDialogue()
+                return@setOnClickListener
+            }
 
             login(userIdNameTextEdit.text.toString(), passwordTextEdit.text.toString())
         }
@@ -107,11 +122,11 @@ class LoginFragment : Fragment() {
     private fun login(userIdName: String, password: String){
         //例外ハンドラーの作成
         val handlerList = loginAndSignupActivity.getCoroutineExceptionHandler()
-        handlerList += ExceptionHandler<LoginException>{
+        handlerList += ExceptionHandler.newIncense<LoginException>{
             AlertDialog.Builder(loginAndSignupActivity)
                 .setTitle("失敗")
                 .setMessage("ログインに失敗しました。ユーザーIDとパスワードをご確認ください。")
-                .setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
+                //.setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
                 .show()
         }
 

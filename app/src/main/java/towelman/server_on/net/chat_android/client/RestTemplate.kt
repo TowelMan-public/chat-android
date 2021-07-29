@@ -2,10 +2,8 @@ package towelman.server_on.net.chat_android.client
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
-import okhttp3.MediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import okhttp3.*
 import towelman.server_on.net.chat_android.client.exception.NetworkOfflineException
 import java.io.IOException
 
@@ -46,8 +44,8 @@ class RestTemplate private constructor() {
 
         try {
             val response = client.newCall(request).execute()
-            restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
-        }catch (_ : IOException){
+            restTemplateErrorHandler.checkErrorAndThrows(response.body()!!.string(), response.code())
+        }catch (_: IOException){
             throw NetworkOfflineException()
         }
     }
@@ -70,9 +68,12 @@ class RestTemplate private constructor() {
 
         try {
             val response = client.newCall(request).execute()
-            restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
-            return objectMapper.readValue<Response>(response.toString(),object : TypeReference<Response>() {})
-        } catch (_ : IOException){
+            val responseJson = response.body()!!.string()
+            restTemplateErrorHandler.checkErrorAndThrows(responseJson, response.code())
+            return objectMapper
+                    .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
+                    .readValue<Response>(responseJson, object : TypeReference<Response>() {})
+        } catch (_: IOException){
             throw NetworkOfflineException()
         }
     }
@@ -93,8 +94,8 @@ class RestTemplate private constructor() {
 
         try {
             val response = client.newCall(request).execute()
-            restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
-        } catch (_ : IOException){
+            restTemplateErrorHandler.checkErrorAndThrows(response.body()!!.string(), response.code())
+        } catch (_: IOException){
             throw NetworkOfflineException()
         }
     }
@@ -116,9 +117,10 @@ class RestTemplate private constructor() {
 
         try {
             val response = client.newCall(request).execute()
-            restTemplateErrorHandler.checkErrorAndThrows(response.toString(), response.code())
-            return response.toString()
-        } catch (_ : IOException){
+            val responseJson = response.body()!!.string()
+            restTemplateErrorHandler.checkErrorAndThrows(responseJson, response.code())
+            return responseJson
+        } catch (_: IOException){
             throw NetworkOfflineException()
         }
     }

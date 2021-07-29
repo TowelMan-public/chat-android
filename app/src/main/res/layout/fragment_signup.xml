@@ -8,82 +8,88 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="79dp"
-        android:text="新規登録"
+        android:text="@string/signup"
         android:textAlignment="center"
         android:textSize="50sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ユーザーID"
+        android:text="@string/user_id_name"
         android:textSize="30sp"
-        android:translationY="120dp" />
+        android:translationY="100dp" />
 
     <EditText
         android:id="@+id/userIdNameTextEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="ユーザーID"
         android:textSize="24sp"
-        android:translationY="160dp" />
+        android:translationY="140dp"
+        android:autofillHints="ユーザーID"
+        android:inputType="text"
+        tools:ignore="LabelFor" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ニックネーム"
+        android:text="@string/user_name"
         android:textSize="30sp"
-        android:translationY="220dp" />
+        android:translationY="200dp" />
 
     <EditText
         android:id="@+id/userNameTextEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="ニックネーム"
         android:textSize="24sp"
-        android:translationY="270dp" />
+        android:translationY="250dp"
+        android:autofillHints="ニックネーム"
+        android:inputType="text"
+        tools:ignore="LabelFor" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="パスワード"
+        android:text="@string/password"
         android:textSize="30sp"
-        android:translationY="330dp" />
+        android:translationY="310dp" />
 
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/passwordTextEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="パスワード"
-        android:inputType="textPassword"
         android:textSize="24sp"
-        android:translationY="380dp" />
+        android:translationY="360dp"
+        android:autofillHints="パスワード"
+        android:inputType="textPassword"
+        tools:ignore="LabelFor" />
 
     <EditText
-        android:id="@+id/oneMorePassword"
+        android:id="@+id/oneMorePasswordTextEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="パスワード（もう一度）"
-        android:inputType="textPassword"
         android:textSize="24sp"
-        android:translationY="430dp" />
+        android:translationY="410dp"
+        android:autofillHints="パスワード（もう一度）"
+        android:inputType="numberPassword"
+        tools:ignore="LabelFor" />
 
     <Button
         android:id="@+id/signupButton"
         android:layout_width="189dp"
         android:layout_height="77dp"
-        android:text="新規登録"
+        android:text="@string/signup"
         android:textSize="20sp"
         android:translationX="112dp"
-        android:translationY="500dp" />
+        android:translationY="480dp" />
 
     <TextView
         android:id="@+id/loginTextView"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:text="既存のアカウントでログインする"
+        android:text="@string/login_guidance"
         android:textAlignment="center"
         android:textColor="@color/purple_700"
-        android:textSize="20"
-        android:translationY="580dp"/>
+        android:textSize="20sp"
+        android:translationY="560dp"/>
 
 </FrameLayout>

@@ -2,7 +2,9 @@ package towelman.server_on.net.chat_android.client
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import towelman.server_on.net.chat_android.client.exception.*
+import java.io.IOException
 
 /**
  * RestTemplateのエラーハンドラー
@@ -46,8 +48,16 @@ class RestTemplateErrorHandler private constructor() {
      * @param responseJson JSON文字列
      * @return エラーレスポンス
      */
-    private fun parseJson(responseJson: String) =
-            objectMapper.readValue(responseJson, object : TypeReference<ErrorResponse>() {})
+    private fun parseJson(responseJson: String): ErrorResponse {
+        return try {
+            objectMapper
+                    .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
+                    .readValue(responseJson, object : TypeReference<ErrorResponse>() {})
+        }
+        catch (_: IOException){
+            ErrorResponse()
+        }
+    }
 
     /**
      * 適宜例外を投げる（実際にエラーをハンドリングする）
@@ -78,5 +88,8 @@ class RestTemplateErrorHandler private constructor() {
     /**
      * エラーレスポンス
      */
-    data class ErrorResponse(val errorCode: String, val message: String)
+    class ErrorResponse{
+        var errorCode: String = ""
+        val message: String = ""
+    }
 }

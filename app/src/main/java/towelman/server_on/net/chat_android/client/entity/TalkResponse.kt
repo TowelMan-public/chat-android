@@ -3,6 +3,8 @@ package towelman.server_on.net.chat_android.client.entity
 /**
  * トークを取得するAPIのレスポンスとして返すエンティティー
  */
-data class TalkResponse(val talkIndex: Int, val userIdName: String,
-                        val userName: String, val content: String,
-                        val timestampString:String)
+class TalkResponse(var talkIndex: Int, var userIdName: String,
+                   var userName: String, var content: String,
+                   var timestampString:String){
+    constructor(): this(-1, "", "", "", "")
+}

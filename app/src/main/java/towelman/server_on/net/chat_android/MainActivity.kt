@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * このActivityの管理下で使うAccountManagerAdapter
      */
-    val accountManager: AccountManagerAdapterForTowelman = AccountManagerAdapterForTowelman(this)
+    lateinit  var accountManager: AccountManagerAdapterForTowelman
 
     /**
      * このActivityが生成されたときの処理
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        accountManager = AccountManagerAdapterForTowelman(this)
         if(!accountManager.haveAccount)
             transitionLoginAndSignnupActivity()
         else
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
                 .setTitle("入力チェックエラー")
                 .setMessage("入力に不備があります。もう一度ご確認のほどよろしくお願いします。")
-                .setPositiveButton(OK, null)
+                //.setPositiveButton(OK, null)
                 .show()
     }
 
@@ -60,26 +61,26 @@ class MainActivity : AppCompatActivity() {
     fun getExceptionHandlingListForCoroutine(): ExceptionHandlingListForCoroutine {
         val handlerList = ExceptionHandlingListForCoroutine()
 
-        handlerList += ExceptionHandler<Exception>{
+        handlerList += ExceptionHandler.newIncense<Exception>{
             AlertDialog.Builder(this)
                     .setTitle("重大なエラー")
                     .setMessage("予期しないエラーが発生しました。これまでに行われた操作は一部、あるいはすべてが無効、不正になっている可能性があります。" +
                             "開発者にこのエラーが発生したことを、状況等を細かく伝えてください。")
-                    .setPositiveButton(OK, null)
+                    //.setPositiveButton(OK, null)
                     .show()
-        } + ExceptionHandler<HttpException>{ exception ->
+        } + ExceptionHandler.newIncense<HttpException>{ exception ->
             AlertDialog.Builder(this)
                     .setTitle("通信エラー")
                     .setMessage("予期しない通信エラーが発生しました。これまでに行われた操作は一部、あるいはすべてが無効、不正になっている可能性があります。" +
                             "開発者にこのエラーが発生したことを、状況等を細かく伝えてください。\n" +
                             "ステータスコード: ${exception.httpStatusCode}")
-                    .setPositiveButton(OK, null)
+                    //.setPositiveButton(OK, null)
                     .show()
-        } + ExceptionHandler<NetworkOfflineException>{
+        } + ExceptionHandler.newIncense<NetworkOfflineException>{
             AlertDialog.Builder(this)
                     .setTitle("通信エラー")
                     .setMessage("ネットーワークで障害が発生しました。このエラーは本体がネットにつながってないと発生することがあります")
-                    .setPositiveButton(OK, null)
+                    //.setPositiveButton(OK, null)
                     .show()
         }
 

@@ -3,6 +3,8 @@ package towelman.server_on.net.chat_android.client.entity
 /**
  * 友達リストを取得するAPIのレスポンスとして返すエンティティー
  */
-data class HaveUserResponse(val haveUserIdName: String, val haveUserName: String,
-                            val talkRoomId: Int, val talkLastIndex: Int,
-                            val myLastTalkIndex: Int)
+class HaveUserResponse(var haveUserIdName: String, var haveUserName: String,
+                       var talkRoomId: Int, var talkLastIndex: Int,
+                       var myLastTalkIndex: Int){
+    constructor(): this("", "", -1, -1, -1)
+}
