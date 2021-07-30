@@ -8,7 +8,10 @@ import java.util.*
  * 最後に登録されたやつからハンドリングを実行していく
  */
 open class ExceptionHandlingList {
-    private val exceptionHandlerList: MutableList<ExceptionHandlerInterface> = mutableListOf()
+    protected val exceptionHandlerList: MutableList<ExceptionHandlerInterface> = mutableListOf()
+
+    protected fun getExceptionHandlerList(exceptionHandlingList: ExceptionHandlingList)
+        = exceptionHandlingList.exceptionHandlerList
 
     /**
      * 例外ハンドラーを単体で追加する
@@ -69,23 +72,5 @@ open class ExceptionHandlingList {
         newExceptionHandlingList.add(this)
         newExceptionHandlingList.add(exceptionHandlingList)
         return newExceptionHandlingList
-    }
-
-    /**
-     * +=演算子のオーバーロード
-     *
-     * @param exceptionHandler エラーハンドラー
-     */
-    operator fun plusAssign(exceptionHandler: ExceptionHandlerInterface){
-        add(exceptionHandler)
-    }
-
-    /**
-     * +=演算子のオーバーロード
-     *
-     * @param exceptionHandlingList 例外ハンドラーのListクラス（ExceptionHandlingList）
-     */
-    operator fun plusAssign(exceptionHandlingList: ExceptionHandlingList){
-        add(exceptionHandlingList)
     }
 }

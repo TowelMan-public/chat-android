@@ -21,4 +21,12 @@ class ExceptionHandlingListForCoroutine: ExceptionHandlingList() {
                 handlingAll(Exception(throwable.message))
         }
     }
+
+    operator fun plusAssign(exceptionHandlingList: ExceptionHandlingList){
+        exceptionHandlerList.addAll(getExceptionHandlerList((exceptionHandlingList)))
+    }
+
+    operator fun plusAssign(exceptionHandler: ExceptionHandler){
+        exceptionHandlerList.add(exceptionHandler)
+    }
 }
