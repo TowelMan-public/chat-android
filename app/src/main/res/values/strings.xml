@@ -11,4 +11,6 @@
     <string name="signup_guidance">新しくユーザーを登録する</string>
     <string name="notification_id">towelman_chat_notification</string>
     <string name="notification_name">チャット♪</string>
+    <string name="make_group">グループ作成</string>
+    <string name="group_name">グループ名</string>
 </resources>

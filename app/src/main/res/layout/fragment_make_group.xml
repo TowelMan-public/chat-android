@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MakeGroupFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:text="@string/make_group"
+        android:textAlignment="center"
+        android:textSize="50sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/group_name"
+        android:textSize="30sp"
+        android:translationY="200dp" />
+
+    <EditText
+        android:id="@+id/groupNameTextEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:translationY="240dp"
+        android:autofillHints="グループ名"
+        android:inputType="text"
+        tools:ignore="LabelFor"/>
+
+    <Button
+        android:id="@+id/makeGroupButton"
+        android:layout_width="189dp"
+        android:layout_height="77dp"
+        android:text="@string/make_group"
+        android:textSize="20sp"
+        android:translationX="100dp"
+        android:translationY="400dp" />
+
+</FrameLayout>
