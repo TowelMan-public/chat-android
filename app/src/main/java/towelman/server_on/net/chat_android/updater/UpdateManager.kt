@@ -69,7 +69,7 @@ class UpdateManager {
      * @return updateKeyに紐づけられた更新処理を行う(Updater)クラスの更新を行う間隔(ミリ秒)、指定されてなかったら-1
      */
     fun getUpdateTimeSpan(updateKey: String) = optionMap[updateKey]!!.updateTimeSpan
-    
+
     /**
      * updateKeyに紐づけられた更新処理を行う(Updater)クラスをこのクラスから削除する
      *

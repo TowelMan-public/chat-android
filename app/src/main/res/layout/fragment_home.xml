@@ -16,7 +16,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp" />
 
-    <Button
+    <ImageButton
         android:id="@+id/TalkRoomListButton"
         android:layout_width="84dp"
         android:layout_height="72dp"
@@ -28,10 +28,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/main_fragment_border"
-        app:backgroundTint="#32C1ED"/>
+        android:src="@drawable/main_fragment_border"
+        android:background="@drawable/TalkRoomList"
+        app:backgroundTint="#32C1ED"
+        android:backgroundTintMode="multiply"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/TalkRoomListHasNoticeButton"
         android:layout_width="84dp"
         android:layout_height="73dp"
@@ -39,14 +41,17 @@
         android:layout_marginTop="658dp"
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
-        android:background="#FF7700"
-        app:backgroundTint="#32C1ED"
+        android:src="@drawable/main_fragment_border"
+        android:background="@drawable/nowTalkRoomsTalkList"
+        android:backgroundTint="#32C1ED"
+        android:backgroundTintMode="multiply"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/TalkRoomListButton"
         app:layout_constraintStart_toEndOf="@+id/AddDialogueButton"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <ImageButton
         android:id="@+id/AddDialogueButton"
         android:layout_width="84dp"
         android:layout_height="73dp"
@@ -58,10 +63,12 @@
         app:layout_constraintEnd_toStartOf="@+id/TalkRoomListHasNoticeButton"
         app:layout_constraintStart_toEndOf="@+id/MakeGroupButton"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/main_fragment_border"
-        app:backgroundTint="#32C1ED"/>
+        android:src="@drawable/main_fragment_border"
+        android:background="@drawable/groupTalkRoomAdd"
+        app:backgroundTint="#32C1ED"
+        android:backgroundTintMode="multiply"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/MakeGroupButton"
         android:layout_width="84dp"
         android:layout_height="73dp"
@@ -73,10 +80,12 @@
         app:layout_constraintEnd_toStartOf="@+id/AddDialogueButton"
         app:layout_constraintStart_toEndOf="@+id/UserConfigButton"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/main_fragment_border"
-        app:backgroundTint="#32C1ED"/>
+        android:src="@drawable/main_fragment_border"
+        android:background="@drawable/talkRoomAdd"
+        app:backgroundTint="#32C1ED"
+        android:backgroundTintMode="multiply"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/UserConfigButton"
         android:layout_width="84dp"
         android:layout_height="73dp"
@@ -88,7 +97,9 @@
         app:layout_constraintEnd_toStartOf="@+id/MakeGroupButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/main_fragment_border"
-        app:backgroundTint="#32C1ED"/>
+        android:src="@drawable/main_fragment_border"
+        android:background="@drawable/anotherMenu"
+        app:backgroundTint="#32C1ED"
+        android:backgroundTintMode="multiply"/>
 
 </FrameLayout>

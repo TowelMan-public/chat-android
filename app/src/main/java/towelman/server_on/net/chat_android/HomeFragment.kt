@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.core.content.res.ResourcesCompat
 
 /**
  * ホーム画面の全体のFragment<br>
@@ -35,4 +37,10 @@ class HomeFragment : Fragment() {
         @JvmStatic
         fun newInstance() = HomeFragment()
     }
+
+    /*
+          メモ
+
+          ・通知有トークルームリストが存在するときの色: FF7700  ないときの色: 32C1ED
+     */
 }
