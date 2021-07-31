@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddDialogueFragment">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:text="@string/add_dialogue"
+        android:textAlignment="center"
+        android:textSize="50sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/user_id_name"
+        android:textSize="30sp"
+        android:translationY="200dp" />
+
+    <EditText
+        android:id="@+id/userIdNameTextEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:translationY="240dp"
+        android:autofillHints="友達登録したいユーザーのID"
+        android:inputType="text"
+        tools:ignore="LabelFor"/>
+
+    <Button
+        android:id="@+id/addDialogueButton"
+        android:layout_width="189dp"
+        android:layout_height="77dp"
+        android:text="@string/add_dialogue"
+        android:textSize="20sp"
+        android:translationX="100dp"
+        android:translationY="400dp" />
+
+</FrameLayout>

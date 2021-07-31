@@ -31,8 +31,13 @@ class ExceptionHandler constructor(val runDelegate: (exception: Exception) -> Bo
         inline fun <reified E> newIncense(crossinline runDelegate: (exception: E) -> Unit): ExceptionHandler{
             return ExceptionHandler {
                     if(it is E) {
-                        runDelegate(it)
-                        true
+                        try {
+                            runDelegate(it)
+                            true
+                        }
+                        catch (_: Exception){
+                            false
+                        }
                     }
                     else
                         false

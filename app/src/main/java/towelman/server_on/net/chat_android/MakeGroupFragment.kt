@@ -81,8 +81,7 @@ class MakeGroupFragment : Fragment() {
      * @param container このFragmentを配置する場所
      * @param savedInstanceState このActivityで保持するべき情報・状態
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_make_group, container, false)
     }
@@ -99,7 +98,7 @@ class MakeGroupFragment : Fragment() {
                 GroupRestService.makeGroup(mainActivity.accountManager.getOauthToken(), groupName)
             }
 
-            Toast.makeText(context , "グループを${groupName}という名前で作成しました", Toast.LENGTH_LONG).show();
+            Toast.makeText(context , "グループを${groupName}という名前で作成しました", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -111,6 +110,6 @@ class MakeGroupFragment : Fragment() {
          * @return A new instance of fragment MakeGroupFragment.
          */
         @JvmStatic
-        fun newInstance(param1: String, param2: String) = MakeGroupFragment()
+        fun newInstance() = MakeGroupFragment()
     }
 }
