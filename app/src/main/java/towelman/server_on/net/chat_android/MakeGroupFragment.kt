@@ -13,6 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import towelman.server_on.net.chat_android.service.GroupRestService
+import towelman.server_on.net.chat_android.updater.UpdateKeyConfig
+import towelman.server_on.net.chat_android.updater.UpdateManager
 import towelman.server_on.net.chat_android.validate.EditTextValidateManager
 import towelman.server_on.net.chat_android.validate.EditTextValidator
 import towelman.server_on.net.chat_android.validate.MaxStringValidatable
@@ -99,6 +101,7 @@ class MakeGroupFragment : Fragment() {
             }
 
             Toast.makeText(context , "グループを${groupName}という名前で作成しました", Toast.LENGTH_LONG).show()
+            UpdateManager.getInstance().getUpdater(UpdateKeyConfig.TALK_ROOM_LIST).runUpdate()
         }
     }
 

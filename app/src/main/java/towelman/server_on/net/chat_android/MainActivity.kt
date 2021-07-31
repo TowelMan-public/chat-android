@@ -1,7 +1,9 @@
 package towelman.server_on.net.chat_android
 
 import android.app.Service
+import android.app.job.JobInfo
 import android.app.job.JobScheduler
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.icu.text.DateTimePatternGenerator.PatternInfo.OK
@@ -16,6 +18,7 @@ import towelman.server_on.net.chat_android.client.exception.HttpException
 import towelman.server_on.net.chat_android.client.exception.NetworkOfflineException
 import towelman.server_on.net.chat_android.handler.ExceptionHandler
 import towelman.server_on.net.chat_android.handler.ExceptionHandlingListForCoroutine
+import towelman.server_on.net.chat_android.service.TalkRoomListNoticeJobService
 
 /**
  * このアプリのメインで使うActivity
@@ -40,6 +43,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //サービスの終了
+        val scheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        scheduler.cancel(TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID)
+
+        //サービスの開始
+        val componentName = ComponentName(this,
+            TalkRoomListNoticeJobService::class.java)
+        val jobInfo = JobInfo.Builder(TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID, componentName)
+            .apply {
+                setBackoffCriteria(10000, JobInfo.BACKOFF_POLICY_LINEAR)
+                setPersisted(true)
+                setPeriodic(10000)
+                setRequiresCharging(false)
+            }.build()
+        scheduler.schedule(jobInfo)
+
+        //AccountManager、及びその後の処理
         accountManager = AccountManagerAdapterForTowelman(this)
         if(!accountManager.haveAccount)
             transitionLoginAndSignnupActivity()
@@ -107,5 +127,9 @@ class MainActivity : AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, HomeFragment.newInstance())
         transaction.commit()
+    }
+
+    companion object{
+        const val TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID = 1
     }
 }

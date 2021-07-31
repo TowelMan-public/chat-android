@@ -25,12 +25,14 @@ import towelman.server_on.net.chat_android.updater.Updater
  * トークルームに関する更新と通知をするサービスクラス
  */
 class TalkRoomListNoticeJobService : JobService() {
+    private var isStartedService = false
+
     private val updateManager = UpdateManager.getInstance()
     private lateinit var accountManagerAdapter: AccountManagerAdapterForTowelman
     private lateinit var notificationManager: NotificationManager
 
-    private var NormalNotification: Notification? = null
-    private var WarningNotification: Notification? = null
+    private var normalNotification: Notification? = null
+    private var warningNotification: Notification? = null
 
     /**
      * このサービスクラスが終わったときに呼ばれる
@@ -46,6 +48,11 @@ class TalkRoomListNoticeJobService : JobService() {
      * 初期化処理、更新処理の登録などを行う
      */
     override fun onStartJob(params: JobParameters?): Boolean {
+        if(isStartedService)
+            return false
+        else
+            isStartedService = true
+
         accountManagerAdapter = AccountManagerAdapterForTowelman(this)
         notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel()
@@ -127,7 +134,7 @@ class TalkRoomListNoticeJobService : JobService() {
         })
         updateManager.setUpdateTimeSpan(UpdateKeyConfig.TALK_ROOM_LIST, 5000)
 
-        return true
+        return false
     }
 
     /**
@@ -153,8 +160,8 @@ class TalkRoomListNoticeJobService : JobService() {
 
         //通知代入
         when(notificationId){
-            NORMAL_NOTIFICATION_ID -> NormalNotification = notification
-            WARNING_NOTIFICATION_ID -> WarningNotification = notification
+            NORMAL_NOTIFICATION_ID -> normalNotification = notification
+            WARNING_NOTIFICATION_ID -> warningNotification = notification
         }
     }
 
@@ -166,8 +173,8 @@ class TalkRoomListNoticeJobService : JobService() {
     private fun deleteNotification(notificationId: Int){
         //削除する通知の取得
         val notification: Notification? = when(notificationId){
-            NORMAL_NOTIFICATION_ID -> NormalNotification
-            WARNING_NOTIFICATION_ID -> WarningNotification
+            NORMAL_NOTIFICATION_ID -> normalNotification
+            WARNING_NOTIFICATION_ID -> warningNotification
             else -> null
         }
 
@@ -177,8 +184,8 @@ class TalkRoomListNoticeJobService : JobService() {
 
         //後処理
         when(notificationId){
-            NORMAL_NOTIFICATION_ID -> NormalNotification = null
-            WARNING_NOTIFICATION_ID -> WarningNotification = null
+            NORMAL_NOTIFICATION_ID -> normalNotification = null
+            WARNING_NOTIFICATION_ID -> warningNotification = null
         }
     }
 
