@@ -19,6 +19,8 @@ import towelman.server_on.net.chat_android.client.exception.NetworkOfflineExcept
 import towelman.server_on.net.chat_android.handler.ExceptionHandler
 import towelman.server_on.net.chat_android.handler.ExceptionHandlingListForCoroutine
 import towelman.server_on.net.chat_android.service.TalkRoomListNoticeJobService
+import towelman.server_on.net.chat_android.updater.UpdateKeyConfig
+import towelman.server_on.net.chat_android.updater.UpdateManager
 
 /**
  * このアプリのメインで使うActivity
@@ -48,11 +50,12 @@ class MainActivity : AppCompatActivity() {
         scheduler.cancel(TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID)
 
         //サービスの開始
+        UpdateManager.getInstance().deleteUpdater(UpdateKeyConfig.TALK_ROOM_LIST)
         val componentName = ComponentName(this,
             TalkRoomListNoticeJobService::class.java)
         val jobInfo = JobInfo.Builder(TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID, componentName)
             .apply {
-                setBackoffCriteria(10000, JobInfo.BACKOFF_POLICY_LINEAR)
+                setBackoffCriteria(1000, JobInfo.BACKOFF_POLICY_LINEAR)
                 setPersisted(true)
                 setPeriodic(10000)
                 setRequiresCharging(false)
@@ -130,6 +133,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object{
-        const val TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID = 1
+        const val TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID = 3
     }
 }

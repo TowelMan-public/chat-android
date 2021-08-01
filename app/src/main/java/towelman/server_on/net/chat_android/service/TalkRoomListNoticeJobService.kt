@@ -25,37 +25,36 @@ import towelman.server_on.net.chat_android.updater.Updater
  * トークルームに関する更新と通知をするサービスクラス
  */
 class TalkRoomListNoticeJobService : JobService() {
-    private var isStartedService = false
-
     private val updateManager = UpdateManager.getInstance()
-    private lateinit var accountManagerAdapter: AccountManagerAdapterForTowelman
-    private lateinit var notificationManager: NotificationManager
-
-    private var normalNotification: Notification? = null
-    private var warningNotification: Notification? = null
 
     /**
      * このサービスクラスが終わったときに呼ばれる
      */
     override fun onStopJob(params: JobParameters?): Boolean {
-        updateManager.deleteUpdater(UpdateKeyConfig.TALK_ROOM_LIST)
         jobFinished(params, false)
         return false
     }
 
     /**
-     * このサービスクラスが始まった時に呼ばれる。<br>
-     * 初期化処理、更新処理の登録などを行う
+     * 定期実行したい処理を書く
      */
     override fun onStartJob(params: JobParameters?): Boolean {
-        if(isStartedService)
-            return false
-        else
-            isStartedService = true
+        if(!updateManager.isEnableUpdater(UpdateKeyConfig.TALK_ROOM_LIST))
+            setUpdater()
 
-        accountManagerAdapter = AccountManagerAdapterForTowelman(this)
-        notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        createNotificationChannel()
+        updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST).runUpdate()
+        return false
+    }
+
+
+    /**
+     * Updaterをセットする
+     */
+    private fun setUpdater(){
+        val accountManagerAdapter = AccountManagerAdapterForTowelman(this)
+
+        val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        createNotificationChannel(notificationManager)
 
         //定期実行したい更新の登録・作成
         updateManager.addUpdater(UpdateKeyConfig.TALK_ROOM_LIST, Updater<MutableMap<String, MutableList<TalkRoomModel>> >().apply {
@@ -110,41 +109,48 @@ class TalkRoomListNoticeJobService : JobService() {
                 }
 
                 if(noticeSum != 0)
-                    showNotification(NORMAL_NOTIFICATION_ID, "あなた宛てに未読のチャットが${noticeSum}件あります")
+                    showNotification(notificationManager, NORMAL_NOTIFICATION_ID, "あなた宛てに未読のチャットが${noticeSum}件あります")
                 else
-                    deleteNotification(NORMAL_NOTIFICATION_ID)
+                    deleteNotification(notificationManager, NORMAL_NOTIFICATION_ID)
             }
 
             //エラー処理・通知
             exceptionHandlingList.add(
                     ExceptionHandler.newIncense<Exception> {
-                        showNotification(WARNING_NOTIFICATION_ID, "予期しないエラーが発生しました。開発者にご報告ください。")
-                        stopSelf()
+                        showNotification(notificationManager, WARNING_NOTIFICATION_ID, "予期しないエラーが発生しました。開発者にご報告ください。")
+                        stop()
                     } + ExceptionHandler.newIncense<HttpException> {
-                        showNotification(WARNING_NOTIFICATION_ID, "ネットワークに関わるエラーが発生しました。開発者にご報告ください")
-                        stopSelf()
+                        showNotification(notificationManager, WARNING_NOTIFICATION_ID, "ネットワークに関わるエラーが発生しました。開発者にご報告ください")
+                        stop()
                     } + ExceptionHandler.newIncense<NetworkOfflineException> {
                         //何もしない（ネットにつながってないだけだから）
                     } + ExceptionHandler.newIncense<LoginException> {
-                        showNotification(WARNING_NOTIFICATION_ID, "本機種に登録されている本アプリのアカウントが無効になりました。再度ログインしてください。")
+                        showNotification(notificationManager, WARNING_NOTIFICATION_ID, "本機種に登録されている本アプリのアカウントが無効になりました。再度ログインしてください。")
                         accountManagerAdapter.removeUserCache()
-                        stopSelf()
+                        stop()
                     }
             )
         })
-        updateManager.setUpdateTimeSpan(UpdateKeyConfig.TALK_ROOM_LIST, 5000)
+        updateManager.setUpdateTimeSpan(UpdateKeyConfig.TALK_ROOM_LIST, -1)
+    }
 
-        return false
+    /**
+     * このサービス自信を終了させる
+     */
+    private fun stop(){
+        updateManager.deleteUpdater(UpdateKeyConfig.TALK_ROOM_LIST)
+        stopSelf()
     }
 
     /**
      * 通帳画面を表示する
      *
+     * @param notificationManager 通知マネージャー
      * @param notificationId 通知ID
      * @param contentText 通知の内容
      */
-    private fun showNotification(notificationId: Int, contentText: String){
-        deleteNotification(notificationId)
+    private fun showNotification(notificationManager: NotificationManager, notificationId: Int, contentText: String){
+        deleteNotification(notificationManager, notificationId)
 
         //通知の作成
         val notification = NotificationCompat.Builder(this, getString(R.string.notification_id))
@@ -168,9 +174,10 @@ class TalkRoomListNoticeJobService : JobService() {
     /**
      * 通知の削除
      *
+     * @param notificationManager 通知マネージャー
      * @param notificationId 通知ID
      */
-    private fun deleteNotification(notificationId: Int){
+    private fun deleteNotification(notificationManager: NotificationManager, notificationId: Int){
         //削除する通知の取得
         val notification: Notification? = when(notificationId){
             NORMAL_NOTIFICATION_ID -> normalNotification
@@ -191,8 +198,10 @@ class TalkRoomListNoticeJobService : JobService() {
 
     /**
      * 通知チャンネルの作成
+     *
+     * @param notificationManager 通知マネージャー
      */
-    private fun createNotificationChannel(){
+    private fun createNotificationChannel(notificationManager: NotificationManager){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager.createNotificationChannel(
                     NotificationChannel(getString(R.string.notification_id),
@@ -204,5 +213,10 @@ class TalkRoomListNoticeJobService : JobService() {
     companion object{
         private const val NORMAL_NOTIFICATION_ID = 1
         private const val WARNING_NOTIFICATION_ID = 2
+
+        @JvmStatic
+        private var normalNotification: Notification? = null
+        @JvmStatic
+        private var warningNotification: Notification? = null
     }
 }

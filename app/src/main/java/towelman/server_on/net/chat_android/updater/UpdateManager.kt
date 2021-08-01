@@ -15,6 +15,14 @@ class UpdateManager {
     private val optionMap: MutableMap<String, Option> = mutableMapOf()
 
     /**
+     * 指定したUpdaterが登録されているかどうか<br>
+     * 登録されていればtrue、登録されていなければfalseを返す
+     *
+     * @param updateKey 更新処理を行う(Updater)クラスを紐づける文字列
+     */
+    fun isEnableUpdater(updateKey: String) = updaterMap[updateKey] != null
+
+    /**
      * 更新処理を行う(Updater)クラスの追加
      *
      * @param updateKey 更新処理を行う(Updater)クラスを紐づける文字列
