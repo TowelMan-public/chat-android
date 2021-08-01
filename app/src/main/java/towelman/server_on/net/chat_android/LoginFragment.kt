@@ -8,6 +8,7 @@ import android.app.Activity.RESULT_OK
 import android.icu.text.DateTimePatternGenerator
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -69,6 +70,12 @@ class LoginFragment : Fragment() {
         val loginButton = view.findViewById<Button>(R.id.loginButton)
         val signupTextView = view.findViewById<TextView>(R.id.signupTextView)
 
+        //状態の復元
+        if(savedInstanceState != null){
+            userIdNameTextEdit.text = savedInstanceState.getCharSequenceArray("userIdNameTextEdit.text") as Editable
+            passwordTextEdit.text = savedInstanceState.getCharSequenceArray("passwordTextEdit.text") as Editable
+        }
+
         //ログインのValidateManager生成
         val loginValidateManager = EditTextValidateManager().apply {
             add(EditTextValidator(userIdNameTextEdit).apply {
@@ -111,6 +118,20 @@ class LoginFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false)
+    }
+
+    /**
+     * 状態の保存
+     *
+     * @param outState 状態を保存するクラス
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val userIdNameTextEdit = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val passwordTextEdit = view!!.findViewById<EditText>(R.id.passwordTextEdit)
+
+        outState.putCharSequence("userIdNameTextEdit.text", userIdNameTextEdit.text)
+        outState.putCharSequence("passwordTextEdit.text", passwordTextEdit.text)
     }
 
     /**

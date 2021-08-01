@@ -1,12 +1,14 @@
 package towelman.server_on.net.chat_android
 
 import android.os.Bundle
+import android.text.Editable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import kotlinx.coroutines.CoroutineScope
@@ -62,6 +64,11 @@ class AddDialogueFragment : Fragment() {
         val userIdNameTextEdit = view.findViewById<EditText>(R.id.userIdNameTextEdit)
         val addDialogueButton = view.findViewById<Button>(R.id.addDialogueButton)
 
+        //状態の復元
+        if(savedInstanceState != null){
+            userIdNameTextEdit.text = savedInstanceState.getCharSequence("userIdNameTextEdit.text") as Editable
+        }
+
         //友達追加のValidateManager生成
         val addDialogueValidateManager = EditTextValidateManager().apply {
             add(EditTextValidator(userIdNameTextEdit).apply {
@@ -89,6 +96,17 @@ class AddDialogueFragment : Fragment() {
     override fun onCreateView( inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_dialogue, container, false)
+    }
+
+    /**
+     * 状態の保存
+     *
+     * @param outState 状態を保存するクラス
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val userIdNameTextEdit = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
+        outState.putCharSequence("userIdNameTextEdit.text", userIdNameTextEdit.text)
     }
 
     /**

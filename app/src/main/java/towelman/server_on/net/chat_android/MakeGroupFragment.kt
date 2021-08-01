@@ -1,6 +1,7 @@
 package towelman.server_on.net.chat_android
 
 import android.os.Bundle
+import android.text.Editable
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -58,6 +59,11 @@ class MakeGroupFragment : Fragment() {
         val groupNameEditText = view.findViewById<EditText>(R.id.groupNameTextEdit)
         val makeGroupButton = view.findViewById<Button>(R.id.makeGroupButton)
 
+        //状態の復元
+        if(savedInstanceState != null){
+            groupNameEditText.text = savedInstanceState.getCharSequenceArray("groupNameEditText.text") as Editable
+        }
+
         //グループ作成のValidateManager生成
         val groupValidateManager = EditTextValidateManager().apply {
             add(EditTextValidator(groupNameEditText).apply {
@@ -86,6 +92,17 @@ class MakeGroupFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_make_group, container, false)
+    }
+
+    /**
+     * 状態の保存
+     *
+     * @param outState 状態を保存するクラス
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val groupNameEditText = view!!.findViewById<EditText>(R.id.groupNameTextEdit)
+        outState.putCharSequence("groupNameEditText.text", groupNameEditText.text)
     }
 
     /**
