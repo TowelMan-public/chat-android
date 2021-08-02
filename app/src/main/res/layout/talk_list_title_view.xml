@@ -14,14 +14,14 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="30sp" />
+            android:textSize="50sp" />
         <TextView
             android:id="@+id/isOpenedTextVew"
             android:layout_weight="0.2"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:textAlignment="center"
-            android:textSize="30sp"
+            android:textSize="50sp"
             app:autoSizeTextType="uniform"
             app:autoSizeMinTextSize="1sp"
             app:autoSizeMaxTextSize="100sp"/>
