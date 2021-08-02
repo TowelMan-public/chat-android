@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TalkRoomListFragment">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <towelman.server_on.net.chat_android.ListTitleView
+                android:id="@+id/dialogueTalkRoomListContainerTitle"
+                android:background="@drawable/normal_border"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/dialogueTalkRoomListContainer"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <towelman.server_on.net.chat_android.ListTitleView
+                android:id="@+id/groupTalkRoomListContainerTitle"
+                android:background="@drawable/normal_border"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/groupTalkRoomListContainer"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <towelman.server_on.net.chat_android.ListTitleView
+                android:id="@+id/desireDialogueTalkRoomListContainerTitle"
+                android:background="@drawable/normal_border"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/desireDialogueTalkRoomListContainer"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+            <towelman.server_on.net.chat_android.ListTitleView
+                android:id="@+id/desireGroupTalkRoomListContainerTitle"
+                android:background="@drawable/normal_border"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/desireGroupTalkRoomListContainer"
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</FrameLayout>

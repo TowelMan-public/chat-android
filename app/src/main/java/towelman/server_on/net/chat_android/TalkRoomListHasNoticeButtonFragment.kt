@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import towelman.server_on.net.chat_android.model.*
 import towelman.server_on.net.chat_android.updater.TalkRoomUpdater
@@ -38,7 +39,6 @@ class TalkRoomListHasNoticeButtonFragment : Fragment() {
             false
         )
     }
-
 
     /**
      * このFragmentのViewたちが生成されたときときの処理
@@ -76,6 +76,16 @@ class TalkRoomListHasNoticeButtonFragment : Fragment() {
     }
 
     /**
+     * このフラグメントが終わるときの処理
+     */
+    override fun onStop() {
+        super.onStop()
+
+        val talkRoomListUpdater = updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
+        talkRoomListUpdater.successDelegateList.remove(javaClass.name)
+    }
+
+    /**
      * containerにTalkRoomViewを追加する
      *
      * @param container 追加先のcontainer
@@ -87,9 +97,11 @@ class TalkRoomListHasNoticeButtonFragment : Fragment() {
             setTalkRoomName(talkRoomModel.name)
             setTalkRoomNoticeCount(talkRoomModel.noticeCount)
             layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
             )
+
+            background = ResourcesCompat.getDrawable(resources, R.drawable.normal_border, null)
 
             setOnClickListener {
                 homeFragment.showTalkListInTalkRoom(talkRoomModel)
@@ -98,13 +110,6 @@ class TalkRoomListHasNoticeButtonFragment : Fragment() {
 
         //追加
         container.addView(talkRoomView)
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        val talkRoomListUpdater = updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
-        talkRoomListUpdater.successDelegateList.remove(javaClass.name)
     }
 
     companion object {

@@ -35,7 +35,7 @@ class HomeFragment : Fragment() {
      * @param savedInstanceState このActivityで保持するべき情報・状態
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+        //TODO
     }
 
     /**
