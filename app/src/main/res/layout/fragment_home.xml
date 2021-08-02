@@ -14,8 +14,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginBottom="72dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
-        app:layout_constraintButtom_toTopOf="@id/menuButtonListContainer" />
+        android:layout_marginRight="0dp"/>
 
     <LinearLayout
         android:id="@+id/menuButtonListContainer"

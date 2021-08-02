@@ -28,9 +28,7 @@ open class ExceptionHandlingList {
      * @param exceptionHandlingList 例外ハンドラーのListクラス（ExceptionHandlingList）
      */
     fun add(exceptionHandlingList: ExceptionHandlingList){
-        for (it in exceptionHandlingList.exceptionHandlerList) {
-            exceptionHandlerList += exceptionHandlingList.exceptionHandlerList
-        }
+        exceptionHandlerList += exceptionHandlingList.exceptionHandlerList
     }
 
     /**

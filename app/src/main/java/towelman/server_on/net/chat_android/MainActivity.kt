@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             TalkRoomListNoticeJobService::class.java)
         val jobInfo = JobInfo.Builder(TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID, componentName)
             .apply {
-                setBackoffCriteria(1000, JobInfo.BACKOFF_POLICY_LINEAR)
+                setBackoffCriteria(10000, JobInfo.BACKOFF_POLICY_LINEAR)
                 setPersisted(true)
                 setPeriodic(10000)
                 setRequiresCharging(false)

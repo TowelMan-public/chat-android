@@ -84,9 +84,11 @@ class UpdateManager {
      * @param updateKey 更新処理を行う(Updater)クラスを紐づける文字列
      */
     fun deleteUpdater(updateKey: String){
-        handler.removeCallbacks(optionMap[updateKey]!!.runnable)
-        optionMap.remove(updateKey)
-        updaterMap.remove(updateKey)
+        if(optionMap[updateKey] != null) {
+            handler.removeCallbacks(optionMap[updateKey]!!.runnable)
+            optionMap.remove(updateKey)
+            updaterMap.remove(updateKey)
+        }
     }
 
     /**
