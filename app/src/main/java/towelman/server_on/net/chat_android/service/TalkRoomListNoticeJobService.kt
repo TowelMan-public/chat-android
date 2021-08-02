@@ -17,6 +17,7 @@ import towelman.server_on.net.chat_android.client.exception.LoginException
 import towelman.server_on.net.chat_android.client.exception.NetworkOfflineException
 import towelman.server_on.net.chat_android.handler.ExceptionHandler
 import towelman.server_on.net.chat_android.model.*
+import towelman.server_on.net.chat_android.updater.TalkRoomUpdater
 import towelman.server_on.net.chat_android.updater.UpdateKeyConfig
 import towelman.server_on.net.chat_android.updater.UpdateManager
 import towelman.server_on.net.chat_android.updater.Updater
@@ -57,7 +58,7 @@ class TalkRoomListNoticeJobService : JobService() {
         createNotificationChannel(notificationManager)
 
         //定期実行したい更新の登録・作成
-        updateManager.addUpdater(UpdateKeyConfig.TALK_ROOM_LIST, Updater<MutableMap<String, MutableList<TalkRoomModel>> >().apply {
+        updateManager.addUpdater(UpdateKeyConfig.TALK_ROOM_LIST, TalkRoomUpdater().apply {
             //更新処理の内容
             updateDelegate = {
                 //初期化

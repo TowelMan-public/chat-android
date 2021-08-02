@@ -6,7 +6,7 @@ import towelman.server_on.net.chat_android.handler.ExceptionHandlingList
 /**
  * 1つのデータに対する更新処理をするクラス
  */
-class Updater<T>: UpdaterInterface{
+open class Updater<T>: UpdaterInterface{
     /**
      * 更新される対象のデータ<br>
      * updateDelegateを説明の通りに実装していれば最後に更新されたときのデータを取得することができる

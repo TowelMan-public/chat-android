@@ -10,7 +10,7 @@ import android.widget.TextView
 /**
  * トークルームのView
  */
-class TalkRoomView(context : Context, attributeSet: AttributeSet) : LinearLayout(context, attributeSet) {
+class TalkRoomView(context : Context) : LinearLayout(context) {
     init {
         View.inflate(context, R.layout.talk_room_view, this)
     }

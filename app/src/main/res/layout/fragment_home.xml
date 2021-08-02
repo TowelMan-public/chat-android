@@ -25,7 +25,7 @@
         android:gravity="center|bottom">
 
         <ImageButton
-            android:id="@+id/TalkRoomListButton"
+            android:id="@+id/talkRoomListButton"
             android:layout_width="0dp"
             android:layout_height="72dp"
             android:layout_weight="1"
@@ -36,7 +36,7 @@
             android:contentDescription="" />
 
         <ImageButton
-            android:id="@+id/TalkRoomListHasNoticeButton"
+            android:id="@+id/talkRoomListHasNoticeButton"
             android:layout_width="0dp"
             android:layout_height="73dp"
             android:layout_weight="1"
@@ -47,7 +47,7 @@
             android:contentDescription="" />
 
         <ImageButton
-            android:id="@+id/AddDialogueButton"
+            android:id="@+id/addDialogueButton"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="73dp"
@@ -58,7 +58,7 @@
             android:contentDescription="" />
 
         <ImageButton
-            android:id="@+id/MakeGroupButton"
+            android:id="@+id/makeGroupButton"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="73dp"
@@ -69,7 +69,7 @@
             android:contentDescription="" />
 
         <ImageButton
-            android:id="@+id/UserConfigButton"
+            android:id="@+id/userConfigButton"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="73dp"
