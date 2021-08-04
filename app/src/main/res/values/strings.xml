@@ -15,4 +15,5 @@
     <string name="group_name">グループ名</string>
     <string name="add_dialogue">友達登録</string>
     <string name="brock">ブロックする</string>
+    <string name="show_group_details_guidance">グループの詳細へ</string>
 </resources>
