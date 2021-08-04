@@ -18,5 +18,14 @@
             android:layout_width="wrap_content"
             android:layout_marginVertical="5dp"/>
 
+        <TextView
+            android:id="@+id/acceptTextView"
+            android:layout_height="wrap_content"
+            android:text="@string/accept"
+            android:textColor="#1097EA"
+            android:textSize="15sp"
+            android:layout_width="wrap_content"
+            android:layout_marginVertical="5dp"/>
+
     </LinearLayout>
 </merge>
