@@ -63,7 +63,7 @@ class TalkView(context: Context) : LinearLayout(context) {
      *
      * @param clickListener クリックしたときの処理
      */
-    fun onTalkClickListener(clickListener: OnClickListener) {
+    fun setOnTalkClickListener(clickListener: OnClickListener) {
         findViewById<TextView>(R.id.talkContentTextView).setOnClickListener(clickListener)
     }
 

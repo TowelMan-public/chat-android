@@ -9,7 +9,7 @@ import android.widget.TextView
 /**
  * リスト表示などに使うタイトルの部分
  */
-class ListTitleView(context : Context, attributeSet: AttributeSet) : LinearLayout(context, attributeSet) {
+class ListTitleView(context: Context, attributeSet: AttributeSet) : LinearLayout(context, attributeSet) {
     /**
      * このタイトルに対応するリストが表示されているかどうかのセット<br>
      * 表示されていればtrue、表示されていなければfalse
