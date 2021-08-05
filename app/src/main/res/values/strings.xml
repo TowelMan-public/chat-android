@@ -17,4 +17,10 @@
     <string name="brock">ブロックする</string>
     <string name="show_group_details_guidance">グループの詳細へ</string>
     <string name="accept">受け入れる</string>
+    <string name="send">送信</string>
+    <string name="older_load">もっと古いトーク</string>
+    <string name="newer_load">もっと新しいトーク</string>
+    <string name="change">変更</string>
+    <string name="delete">削除</string>
+    <string name="close">閉じる</string>
 </resources>

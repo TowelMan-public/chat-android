@@ -92,22 +92,19 @@ class MainActivity : AppCompatActivity() {
             AlertDialog.Builder(this)
                     .setTitle("重大なエラー")
                     .setMessage("予期しないエラーが発生しました。これまでに行われた操作は一部、あるいはすべてが無効、不正になっている可能性があります。" +
-                            "開発者にこのエラーが発生したことを、状況等を細かく伝えてください。")
-                    //.setPositiveButton(OK, null)
+                            "このエラーが続く場合は開発者にこのエラーが発生したことを、状況等を細かく伝えてください。")
                     .show()
         } + ExceptionHandler.newIncense<HttpException>{ exception ->
             AlertDialog.Builder(this)
                     .setTitle("通信エラー")
                     .setMessage("予期しない通信エラーが発生しました。これまでに行われた操作は一部、あるいはすべてが無効、不正になっている可能性があります。" +
-                            "開発者にこのエラーが発生したことを、状況等を細かく伝えてください。\n" +
+                            "このエラーが続く場合は開発者にこのエラーが発生したことを、状況等を細かく伝えてください。\n" +
                             "ステータスコード: ${exception.httpStatusCode}")
-                    //.setPositiveButton(OK, null)
                     .show()
         } + ExceptionHandler.newIncense<NetworkOfflineException>{
             AlertDialog.Builder(this)
                     .setTitle("通信エラー")
                     .setMessage("ネットーワークで障害が発生しました。このエラーは本体がネットにつながってないと発生することがあります")
-                    //.setPositiveButton(OK, null)
                     .show()
         }
 

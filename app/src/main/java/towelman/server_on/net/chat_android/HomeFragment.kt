@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.core.content.res.ResourcesCompat
+import towelman.server_on.net.chat_android.model.GroupTalkRoomModel
 import towelman.server_on.net.chat_android.model.TalkRoomModel
 
 /**
@@ -58,6 +59,22 @@ class HomeFragment : Fragment() {
      * @param talkRoomModel 表示させたいトークルームのモデルクラス
      */
     fun showTalkListInTalkRoom(talkRoomModel: TalkRoomModel){
+        //TODO
+    }
+
+    /**
+     * 子フラグメントを閉じる
+     */
+    fun closeChildFragment(){
+        //TODO
+    }
+
+    /**
+     * グループ詳細フラグメントを表示させる
+     *
+     * @param groupTalkRoomModel グループトークルームモデル
+     */
+    fun showGroupDetailsFragment(groupTalkRoomModel: GroupTalkRoomModel){
         //TODO
     }
 
