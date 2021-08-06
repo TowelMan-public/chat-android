@@ -53,7 +53,6 @@ class HomeFragment : Fragment() {
     }
 
     /**
-     * TODO
      * トークリストフラグメントを表示させる
      *
      * @param talkRoomModel 表示させたいトークルームのモデルクラス
@@ -75,6 +74,21 @@ class HomeFragment : Fragment() {
      * @param groupTalkRoomModel グループトークルームモデル
      */
     fun showGroupDetailsFragment(groupTalkRoomModel: GroupTalkRoomModel){
+        //TODO
+    }
+
+    /**
+     * ユーザー情報をこの機種から削除し、ログインとユーザーの新規登録
+     * （この機種にこのアプリで使うアカウントが登録されるまで）を担当するActivityに遷移させる
+     */
+    fun finishForLogout(){
+        //TODO
+    }
+
+    /**
+     * 退会確認フラグメントを表示させる
+     */
+    fun showWithdrawalFragment(){
         //TODO
     }
 

@@ -61,6 +61,8 @@ class TalkListInTalkRoomFragment : Fragment() {
 
     /**
      * BundleからModelクラスを取得する
+     *
+     * @param savedInstanceState 保存されているデータたち
      */
     private fun getTalkRoomModelByBundle(savedInstanceState: Bundle): TalkRoomModel{
         var parcelable = savedInstanceState.getParcelable<Parcelable>("DialogueTalkRoomModel")
@@ -86,13 +88,23 @@ class TalkListInTalkRoomFragment : Fragment() {
      * @param container このFragmentを配置する場所
      * @param savedInstanceState このActivityで保持するべき情報・状態
      */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_talk_list_in_talk_room, container, false)
+    }
+
+    /**
+     * 状態の保存
+     *
+     * @param outState 状態を保存するクラス
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val contentEditText = view!!.findViewById<EditText>(R.id.contentEditText)
+
+        outState.putString("contentEditText.text", contentEditText.text.toString())
+        outState.putBoolean("isCreated", true)
     }
 
     /**
@@ -385,7 +397,7 @@ class TalkListInTalkRoomFragment : Fragment() {
                         (talkRoomModel as GroupTalkRoomModel).groupTalkRoomId, talkIndex)
                 }
             }
-            
+
             talkListContainer.removeView(talkView)
             closeTalkEditView()
         }

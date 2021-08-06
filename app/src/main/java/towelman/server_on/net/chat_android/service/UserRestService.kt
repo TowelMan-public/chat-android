@@ -28,7 +28,7 @@ private constructor() {
         }
 
         /**
-         * ユーザーの新規登録をするクラス
+         * ユーザーの新規登録をする
          *
          * @param userIdName ユーザーID
          * @param userName ユーザー名
@@ -36,6 +36,36 @@ private constructor() {
          */
         fun signup(userIdName: String, userName: String, password: String) {
             UserApi.insertUser(userName, userIdName, password)
+        }
+
+        /**
+         * ユーザーID名の変更をする
+         *
+         * @param oauthToken 認証用トークン
+         * @param newUserIdName ユーザーID
+         */
+        fun changeUserIdName(oauthToken: String, newUserIdName: String){
+            UserApi.updateUserIdName(oauthToken, newUserIdName)
+        }
+
+        /**
+         * ユーザー名の変更をする
+         *
+         * @param oauthToken 認証用トークン
+         * @param newUserName 新しいユーザー名
+         */
+        fun changeUserName(oauthToken: String, newUserName: String){
+            UserApi.updateUserName(oauthToken, newUserName)
+        }
+
+        /**
+         * パスワードの変更をする
+         *
+         * @param oauthToken 認証用トークン
+         * @param newPassword パスワード
+         */
+        fun changePassword(oauthToken: String, newPassword: String){
+            UserApi.updatePassword(oauthToken, newPassword)
         }
     }
 }

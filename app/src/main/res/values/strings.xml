@@ -23,4 +23,7 @@
     <string name="change">変更</string>
     <string name="delete">削除</string>
     <string name="close">閉じる</string>
+    <string name="logout_guidance">この機種をログアウトさせる</string>
+    <string name="withdrawal_guidance">退会する</string>
+    <string name="user_config">ユーザー設定</string>
 </resources>
