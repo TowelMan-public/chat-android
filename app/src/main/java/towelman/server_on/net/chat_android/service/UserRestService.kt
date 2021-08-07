@@ -30,7 +30,7 @@ private constructor() {
         /**
          * ユーザーの新規登録をする
          *
-         * @param userIdName ユーザーID
+         * @param userIdName ユーザーID名
          * @param userName ユーザー名
          * @param password パスワード
          */
@@ -42,7 +42,7 @@ private constructor() {
          * ユーザーID名の変更をする
          *
          * @param oauthToken 認証用トークン
-         * @param newUserIdName ユーザーID
+         * @param newUserIdName 新しいユーザーID名
          */
         fun changeUserIdName(oauthToken: String, newUserIdName: String){
             UserApi.updateUserIdName(oauthToken, newUserIdName)
@@ -62,10 +62,18 @@ private constructor() {
          * パスワードの変更をする
          *
          * @param oauthToken 認証用トークン
-         * @param newPassword パスワード
+         * @param newPassword 新しいパスワード
          */
         fun changePassword(oauthToken: String, newPassword: String){
             UserApi.updatePassword(oauthToken, newPassword)
         }
+
+        /**
+         * ユーザー名を取得する
+         *
+         * @param oauthToken 認証用トークン
+         * @param userIdName ユーザーID名
+         */
+        fun getUserName(oauthToken: String, userIdName: String) = UserApi.getUser(oauthToken, userIdName).userName
     }
 }

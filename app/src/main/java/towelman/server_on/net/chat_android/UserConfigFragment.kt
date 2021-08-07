@@ -70,6 +70,8 @@ class UserConfigFragment : Fragment() {
 
         if(isCreated)
             restoreInstanceState(savedInstanceState!!)
+        else
+            setValueToAllEditTextView()
 
         setConfigToUserIdNameChangeButton()
         setConfigToUserNameChangeButton()
@@ -95,6 +97,16 @@ class UserConfigFragment : Fragment() {
         outState.putCharSequence("userNameTextEdit.text", userNameTextEdit.text)
         outState.putCharSequence("passwordTextEdit.text", passwordTextEdit.text)
         outState.putCharSequence("oneMorePasswordTextEdit.text", oneMorePasswordTextEdit.text)
+    }
+
+    private fun setValueToAllEditTextView(){
+        val userIdNameEditText = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val userNameTextEdit = view!!.findViewById<EditText>(R.id.userNameTextEdit)
+
+        userIdNameEditText.setText(mainActivity.accountManager.userIdName)
+        userNameTextEdit.setText(
+            UserRestService.getUserName(mainActivity.accountManager.getOauthToken(), mainActivity.accountManager.userIdName),
+            TextView.BufferType.NORMAL)
     }
 
     /**

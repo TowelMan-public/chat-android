@@ -26,4 +26,10 @@
     <string name="logout_guidance">この機種をログアウトさせる</string>
     <string name="withdrawal_guidance">退会する</string>
     <string name="user_config">ユーザー設定</string>
+    <string name="delete_group_guidance">このグループを削除する</string>
+    <string name="exit_group_guidance">このグループから脱退する</string>
+    <string name="invitation">勧誘</string>
+    <string name="invitation_user_to_group">ユーザーの勧誘</string>
+    <string name="user_in_group">グループ加入者一覧</string>
+    <string name="group_details">グループ詳細</string>
 </resources>
