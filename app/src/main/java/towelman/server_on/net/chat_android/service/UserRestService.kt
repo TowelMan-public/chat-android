@@ -75,5 +75,14 @@ private constructor() {
          * @param userIdName ユーザーID名
          */
         fun getUserName(oauthToken: String, userIdName: String) = UserApi.getUser(oauthToken, userIdName).userName
+
+        /**
+         * 退会する
+         *
+         * @param oauthToken 認証用トークン
+         */
+        fun withdrawal(oauthToken: String){
+            UserApi.deleteUser(oauthToken)
+        }
     }
 }

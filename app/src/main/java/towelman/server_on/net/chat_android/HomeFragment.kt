@@ -92,6 +92,13 @@ class HomeFragment : Fragment() {
         //TODO
     }
 
+    /**
+     * ユーザー設定画面を表示する
+     */
+    fun showUserConfigFragment(){
+        //TODO
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of

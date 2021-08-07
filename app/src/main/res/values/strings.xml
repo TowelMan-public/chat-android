@@ -32,4 +32,8 @@
     <string name="invitation_user_to_group">ユーザーの勧誘</string>
     <string name="user_in_group">グループ加入者一覧</string>
     <string name="group_details">グループ詳細</string>
+    <string name="withdrawal_title">警告!!</string>
+    <string name="withdrawal_content">本当に退会してしまいますか？\nこの操作は取り消せません！！</string>
+    <string name="withdrawal">退会する</string>
+    <string name="back">戻る</string>
 </resources>
