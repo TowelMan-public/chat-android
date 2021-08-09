@@ -104,8 +104,10 @@ class TalkRoomListFragment : Fragment() {
     override fun onStop() {
         super.onStop()
 
-        val talkRoomListUpdater = updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
-        talkRoomListUpdater.successDelegateList.remove(javaClass.name)
+        if(updateManager.isEnableUpdater(UpdateKeyConfig.TALK_ROOM_LIST)) {
+            val talkRoomListUpdater = updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
+            talkRoomListUpdater.successDelegateList.remove(javaClass.name)
+        }
     }
 
     /**

@@ -1,14 +1,25 @@
 package towelman.server_on.net.chat_android
 
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
+import towelman.server_on.net.chat_android.model.DialogueTalkRoomModel
 import towelman.server_on.net.chat_android.model.GroupTalkRoomModel
 import towelman.server_on.net.chat_android.model.TalkRoomModel
+import towelman.server_on.net.chat_android.updater.TalkRoomUpdater
+import towelman.server_on.net.chat_android.updater.UpdateKeyConfig
+import towelman.server_on.net.chat_android.updater.UpdateManager
+import java.lang.Byte.decode
+import java.lang.Integer.decode
+import java.lang.Long.decode
+import java.lang.Short.decode
 
 /**
  * ホーム画面の全体のFragment<br>
@@ -18,14 +29,15 @@ import towelman.server_on.net.chat_android.model.TalkRoomModel
  */
 class HomeFragment : Fragment() {
     /**
-     * このFragmentが生成されたときの処理
-     * このFragmentの設定等
+     * このFragmentのUI等を生成するときの処理
      *
+     * @param inflater 配置等を管理するやつ
+     * @param container このFragmentを配置する場所
      * @param savedInstanceState このActivityで保持するべき情報・状態
      */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     /**
@@ -36,20 +48,23 @@ class HomeFragment : Fragment() {
      * @param savedInstanceState このActivityで保持するべき情報・状態
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //TODO
+        super.onViewCreated(view, savedInstanceState)
+
+        setSuccessDelegateToUpdater()
+        setConfigToAllButton()
     }
 
     /**
-     * このFragmentのUI等を生成するときの処理
-     *
-     * @param inflater 配置等を管理するやつ
-     * @param container このFragmentを配置する場所
-     * @param savedInstanceState このActivityで保持するべき情報・状態
+     * このFragmentが終了するときの処理
      */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    override fun onStop() {
+        super.onStop()
+
+        val updateManager = UpdateManager.getInstance()
+        if(updateManager.isEnableUpdater(UpdateKeyConfig.TALK_ROOM_LIST)) {
+            val talkRoomListUpdater = updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
+            talkRoomListUpdater.successDelegateList.remove(javaClass.name)
+        }
     }
 
     /**
@@ -58,14 +73,7 @@ class HomeFragment : Fragment() {
      * @param talkRoomModel 表示させたいトークルームのモデルクラス
      */
     fun showTalkListInTalkRoom(talkRoomModel: TalkRoomModel){
-        //TODO
-    }
-
-    /**
-     * 子フラグメントを閉じる
-     */
-    fun closeChildFragment(){
-        //TODO
+        showFragment(TalkListInTalkRoomFragment.newInstance(talkRoomModel))
     }
 
     /**
@@ -74,29 +82,128 @@ class HomeFragment : Fragment() {
      * @param groupTalkRoomModel グループトークルームモデル
      */
     fun showGroupDetailsFragment(groupTalkRoomModel: GroupTalkRoomModel){
-        //TODO
-    }
-
-    /**
-     * ユーザー情報をこの機種から削除し、ログインとユーザーの新規登録
-     * （この機種にこのアプリで使うアカウントが登録されるまで）を担当するActivityに遷移させる
-     */
-    fun finishForLogout(){
-        //TODO
+        showFragment(GroupDetailsFragment.newInstance(groupTalkRoomModel.groupTalkRoomId))
     }
 
     /**
      * 退会確認フラグメントを表示させる
      */
     fun showWithdrawalFragment(){
-        //TODO
+        showFragment(WithdrawalFragment.newInstance())
     }
 
     /**
      * ユーザー設定画面を表示する
      */
     fun showUserConfigFragment(){
-        //TODO
+        showFragment(UserConfigFragment.newInstance())
+    }
+
+    /**
+     * 子フラグメントを閉じる
+     */
+    fun closeChildFragment(){
+        val fragment = childFragmentManager.findFragmentById(R.id.container)
+
+        if(fragment != null) {
+            val transaction = childFragmentManager.beginTransaction()
+            transaction.remove(fragment)
+            transaction.commit()
+        }
+
+        UpdateManager.getInstance().getUpdater(UpdateKeyConfig.TALK_ROOM_LIST).runUpdate()
+    }
+
+    /**
+     * トークルームリストを更新するUpdaterの、成功時の処理にこのフラグメントでやりたいことをセットし、更新処理を開始させる
+     */
+    private fun setSuccessDelegateToUpdater(){
+        val talkRoomUpdater = UpdateManager.getInstance().getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
+        talkRoomUpdater.successDelegateList[javaClass.name] = {
+            val talkRoomListHasNoticeButtonWhenHasNoting = view!!.findViewById<Button>(R.id.talkRoomListHasNoticeButtonWhenHasNoting)
+            val talkRoomListHasNoticeButtonWhenHasMoreZero = view!!.findViewById<Button>(R.id.talkRoomListHasNoticeButtonWhenHasMoreZero)
+            var noticeSum = 0
+
+            it!![DialogueTalkRoomModel::javaClass.name]!!.forEach { model ->
+                noticeSum += model.noticeCount
+            }
+            it[GroupTalkRoomModel::javaClass.name]!!.forEach { model ->
+                noticeSum += model.noticeCount
+            }
+
+            if(noticeSum == 0){
+                talkRoomListHasNoticeButtonWhenHasNoting.visibility = View.VISIBLE
+                talkRoomListHasNoticeButtonWhenHasMoreZero.visibility = View.GONE
+            }else{
+                talkRoomListHasNoticeButtonWhenHasNoting.visibility = View.GONE
+                talkRoomListHasNoticeButtonWhenHasMoreZero.visibility = View.VISIBLE
+            }
+        }
+
+        talkRoomUpdater.runUpdate()
+    }
+
+    /**
+     * このフラグメントの全てのボタンの設定をする
+     */
+    private fun setConfigToAllButton(){
+        view!!.findViewById<Button>(R.id.talkRoomListButton).setOnClickListener {
+            showTalkRoomListFragment()
+        }
+
+        view!!.findViewById<Button>(R.id.talkRoomListHasNoticeButtonWhenHasNoting).setOnClickListener {
+            showTalkRoomListHasNoticeButtonFragment()
+        }
+
+        view!!.findViewById<Button>(R.id.talkRoomListHasNoticeButtonWhenHasMoreZero).setOnClickListener {
+            showTalkRoomListHasNoticeButtonFragment()
+        }
+
+        view!!.findViewById<Button>(R.id.addDialogueButton).setOnClickListener {
+            showAddDialogueFragment()
+        }
+
+        view!!.findViewById<Button>(R.id.makeGroupButton).setOnClickListener {
+            showMakeGroupFragment()
+        }
+
+        view!!.findViewById<Button>(R.id.userConfigButton).setOnClickListener {
+            showUserConfigFragment()
+        }
+    }
+
+    /**
+     * トークルームリストフラグメントを表示させる
+     */
+    private fun showTalkRoomListFragment(){
+        showFragment(TalkRoomListFragment.newInstance())
+    }
+
+    /**
+     * グループ作成フラグメントを表示させる
+     */
+    private fun showMakeGroupFragment(){
+        showFragment(MakeGroupFragment.newInstance())
+    }
+
+    /**
+     * 友達追加フラグメントを表示させる
+     */
+    private fun showAddDialogueFragment(){
+        showFragment(AddDialogueFragment.newInstance())
+    }
+
+    /**
+     * 通知有トークルームリストフラグメントを表示させる
+     */
+    private fun showTalkRoomListHasNoticeButtonFragment(){
+        showFragment(TalkRoomListHasNoticeButtonFragment.newInstance())
+    }
+
+    private fun showFragment(fragment: Fragment){
+        val transaction = childFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment)
+        transaction.commit()
     }
 
     companion object {

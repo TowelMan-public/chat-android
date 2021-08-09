@@ -35,7 +35,7 @@
             android:contentDescription="" />
 
         <ImageButton
-            android:id="@+id/talkRoomListHasNoticeButton"
+            android:id="@+id/talkRoomListHasNoticeButtonWhenHasNoting"
             android:layout_width="0dp"
             android:layout_height="73dp"
             android:layout_weight="1"
@@ -43,6 +43,18 @@
             android:background="@drawable/now_talk_rooms_talk_list"
             android:backgroundTint="#32C1ED"
             android:backgroundTintMode="multiply"
+            android:contentDescription="" />
+
+        <ImageButton
+            android:id="@+id/talkRoomListHasNoticeButtonWhenHasMoreZero"
+            android:layout_width="0dp"
+            android:layout_height="73dp"
+            android:layout_weight="1"
+            android:src="@drawable/main_fragment_border"
+            android:background="@drawable/now_talk_rooms_talk_list"
+            android:backgroundTint="#FF7700"
+            android:backgroundTintMode="multiply"
+            android:visibility="gone"
             android:contentDescription="" />
 
         <ImageButton

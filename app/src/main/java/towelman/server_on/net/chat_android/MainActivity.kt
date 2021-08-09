@@ -112,6 +112,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
+     * ユーザー情報をこの機種から削除し、ログインとユーザーの新規登録
+     * （この機種にこのアプリで使うアカウントが登録されるまで）を担当するActivityに遷移させる
+     */
+    fun finishForLogout(){
+        accountManager.removeUserCache()
+        transitionLoginAndSignnupActivity()
+    }
+
+    /**
      * ログインとユーザーの新規登録を担当するのActivityに画面遷移させるためのクラス
      */
     private fun transitionLoginAndSignnupActivity(){

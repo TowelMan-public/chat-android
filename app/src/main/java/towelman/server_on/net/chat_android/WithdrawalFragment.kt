@@ -61,7 +61,7 @@ class WithdrawalFragment : Fragment() {
                     UserRestService.withdrawal(mainActivity.accountManager.getOauthToken())
                 }
             }
-            homeFragment.finishForLogout()
+            mainActivity.finishForLogout()
         }
     }
 
