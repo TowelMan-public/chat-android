@@ -1,5 +1,6 @@
 package towelman.server_on.net.chat_android
 
+import android.app.NotificationManager
 import android.app.Service
 import android.app.job.JobInfo
 import android.app.job.JobScheduler
@@ -19,6 +20,7 @@ import towelman.server_on.net.chat_android.client.exception.NetworkOfflineExcept
 import towelman.server_on.net.chat_android.handler.ExceptionHandler
 import towelman.server_on.net.chat_android.handler.ExceptionHandlingListForCoroutine
 import towelman.server_on.net.chat_android.service.TalkRoomListNoticeJobService
+import towelman.server_on.net.chat_android.updater.TalkRoomUpdater
 import towelman.server_on.net.chat_android.updater.UpdateKeyConfig
 import towelman.server_on.net.chat_android.updater.UpdateManager
 
@@ -49,25 +51,36 @@ class MainActivity : AppCompatActivity() {
         val scheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
         scheduler.cancel(TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID)
 
-        //サービスの開始
-        UpdateManager.getInstance().deleteUpdater(UpdateKeyConfig.TALK_ROOM_LIST)
-        val componentName = ComponentName(this,
-            TalkRoomListNoticeJobService::class.java)
-        val jobInfo = JobInfo.Builder(TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID, componentName)
-            .apply {
-                setBackoffCriteria(10000, JobInfo.BACKOFF_POLICY_LINEAR)
-                setPersisted(true)
-                setPeriodic(10000)
-                setRequiresCharging(false)
-            }.build()
-        scheduler.schedule(jobInfo)
-
         //AccountManager、及びその後の処理
         accountManager = AccountManagerAdapterForTowelman(this)
         if(!accountManager.haveAccount)
             transitionLoginAndSignnupActivity()
-        else
+        else {
+            setTalkRoomListUpdaterToUpdateManager()
             showHomeFragment()
+        }
+    }
+
+    /**
+     * このActivityが終了するときに実行される
+     */
+    override fun onStop() {
+        super.onStop()
+
+        UpdateManager.getInstance().deleteUpdaterAll()
+
+        //サービスの開始
+        val scheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+        val componentName = ComponentName(this,
+                TalkRoomListNoticeJobService::class.java)
+        val jobInfo = JobInfo.Builder(TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID, componentName)
+                .apply {
+                    setBackoffCriteria(10000, JobInfo.BACKOFF_POLICY_LINEAR)
+                    setPersisted(true)
+                    setPeriodic(60000 * 10)
+                    setRequiresCharging(false)
+                }.build()
+        scheduler.schedule(jobInfo)
     }
 
     /**
@@ -118,6 +131,28 @@ class MainActivity : AppCompatActivity() {
     fun finishForLogout(){
         accountManager.removeUserCache()
         transitionLoginAndSignnupActivity()
+    }
+
+    /**
+     * トークルームリストのUpdaterを設定する
+     */
+    private fun setTalkRoomListUpdaterToUpdateManager(){
+        val talkRoomUpdater = TalkRoomUpdater()
+
+        talkRoomUpdater.updateDelegate = {
+            TalkRoomListNoticeJobService.getTalkRoomList(this)
+        }
+
+        talkRoomUpdater.successDelegateList[javaClass.name] = {
+            val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            TalkRoomListNoticeJobService.pushNotice(this, notificationManager, it!!)
+        }
+
+        talkRoomUpdater.exceptionHandlingList = getExceptionHandlingListForCoroutine()
+
+        val updateManager = UpdateManager.getInstance()
+        updateManager.addUpdater(UpdateKeyConfig.TALK_ROOM_LIST, talkRoomUpdater)
+        updateManager.setUpdateTimeSpan(UpdateKeyConfig.TALK_ROOM_LIST, 60000 * 5)
     }
 
     /**
