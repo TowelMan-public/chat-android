@@ -162,6 +162,7 @@ class UserConfigFragment : Fragment() {
             }
 
             //処理
+            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(exceptionHandlerList.createCoroutineExceptionHandler()) {
                 withContext(Dispatchers.Default) {
                     UserRestService.changeUserIdName(mainActivity.accountManager.getOauthToken(), userIdNameEditText.text.toString())
@@ -169,6 +170,7 @@ class UserConfigFragment : Fragment() {
 
                 mainActivity.accountManager.userIdName = userIdNameEditText.text.toString()
             }
+            mainActivity.stopShowingProgressBar()
         }
     }
 
@@ -195,11 +197,13 @@ class UserConfigFragment : Fragment() {
             }
 
             //処理
+            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
                 withContext(Dispatchers.Default) {
                     UserRestService.changeUserName(mainActivity.accountManager.getOauthToken(), userNameTextEdit.text.toString())
                 }
             }
+            mainActivity.stopShowingProgressBar()
         }
     }
 
@@ -232,6 +236,7 @@ class UserConfigFragment : Fragment() {
             }
 
             //処理
+            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
                 withContext(Dispatchers.Default) {
                     UserRestService.changePassword(mainActivity.accountManager.getOauthToken(), passwordTextEdit.text.toString())
@@ -239,6 +244,7 @@ class UserConfigFragment : Fragment() {
 
                 mainActivity.accountManager.password = passwordTextEdit.text.toString()
             }
+            mainActivity.stopShowingProgressBar()
         }
     }
 
@@ -249,7 +255,7 @@ class UserConfigFragment : Fragment() {
         val logoutTextView = view!!.findViewById<TextView>(R.id.logoutTextView)
 
         logoutTextView.setOnClickListener {
-            homeFragment.finishForLogout()
+            mainActivity.finishForLogout()
         }
     }
 

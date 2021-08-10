@@ -10,6 +10,8 @@ import android.content.Intent
 import android.icu.text.DateTimePatternGenerator.PatternInfo.OK
 import android.os.Bundle
 import android.os.IBinder
+import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.Dispatchers
@@ -122,6 +124,20 @@ class MainActivity : AppCompatActivity() {
         }
 
         return handlerList
+    }
+
+    /**
+     * グルグルの表示を始める
+     */
+    fun startShowingProgressBar(){
+        findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
+    }
+
+    /**
+     * グルグルの表示を止める
+     */
+    fun stopShowingProgressBar(){
+        findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
     }
 
     /**

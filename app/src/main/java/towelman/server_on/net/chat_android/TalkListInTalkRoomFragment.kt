@@ -162,6 +162,7 @@ class TalkListInTalkRoomFragment : Fragment() {
             when (talkRoomModel) {
                 is DialogueTalkRoomModel -> DialogueTalkListMenuView(mainActivity).apply {
                     setOnBrockTextViewTalkClickListener(View.OnClickListener {
+                        mainActivity.startShowingProgressBar()
                         CoroutineScope(mainActivity.coroutineContext).launch(errorHandlingListForCoroutine.createCoroutineExceptionHandler()) {
                             withContext(Dispatchers.Default) {
                                 DialogueRestService.brock(
@@ -171,6 +172,7 @@ class TalkListInTalkRoomFragment : Fragment() {
                             }
                         }
                         homeFragment.closeChildFragment()
+                        mainActivity.stopShowingProgressBar()
                     })
                 }
 
@@ -182,6 +184,7 @@ class TalkListInTalkRoomFragment : Fragment() {
 
                 else -> DesireTalkListMenuView(mainActivity).apply {
                     setOnAcceptTextViewTalkClickListener(View.OnClickListener {
+                        mainActivity.startShowingProgressBar()
                         CoroutineScope(mainActivity.coroutineContext).launch(errorHandlingListForCoroutine.createCoroutineExceptionHandler()) {
                             withContext(Dispatchers.Default) {
                                 if (talkRoomModel is DesireDialogueTalkRoomModel) {
@@ -197,10 +200,12 @@ class TalkListInTalkRoomFragment : Fragment() {
                                 }
                             }
                         }
+                        mainActivity.stopShowingProgressBar()
                         homeFragment.closeChildFragment()
                     })
 
                     setOnBrockTextViewTalkClickListener(View.OnClickListener {
+                        mainActivity.startShowingProgressBar()
                         CoroutineScope(mainActivity.coroutineContext).launch(errorHandlingListForCoroutine.createCoroutineExceptionHandler()) {
                             withContext(Dispatchers.Default) {
                                 if (talkRoomModel is DesireDialogueTalkRoomModel) {
@@ -216,6 +221,7 @@ class TalkListInTalkRoomFragment : Fragment() {
                                 }
                             }
                         }
+                        mainActivity.stopShowingProgressBar()
                         homeFragment.closeChildFragment()
                     })
                 }
@@ -247,6 +253,7 @@ class TalkListInTalkRoomFragment : Fragment() {
     private fun loadTalkList(startIndex: Int, maxSize: Int, isOlder: Boolean = false){
         var talkModelList: MutableList<TalkModel> = mutableListOf()
 
+        mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(errorHandlingListForCoroutine.createCoroutineExceptionHandler()) {
             withContext(Dispatchers.Default) {
                 talkModelList = when (talkRoomModel) {
@@ -283,6 +290,8 @@ class TalkListInTalkRoomFragment : Fragment() {
             //表示
             showTalkView(it, isOlder)
         }
+
+        mainActivity.stopShowingProgressBar()
     }
 
     /**
@@ -364,6 +373,7 @@ class TalkListInTalkRoomFragment : Fragment() {
      * @param newContentText 新しいトークの内容（変更後のこと）
      */
     private fun changeTalk(talkView: TalkView, talkIndex: Int, newContentText: String){
+        mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(errorHandlingListForCoroutine.createCoroutineExceptionHandler()) {
             withContext(Dispatchers.Default) {
                 if (talkRoomModel is DialogueTalkRoomModel) {
@@ -376,6 +386,7 @@ class TalkListInTalkRoomFragment : Fragment() {
             }
             talkView.setContentText(newContentText)
         }
+        mainActivity.stopShowingProgressBar()
     }
 
     /**
@@ -387,6 +398,7 @@ class TalkListInTalkRoomFragment : Fragment() {
     private fun deleteTalk(talkView: TalkView, talkIndex: Int){
         val talkListContainer = view!!.findViewById<ListTitleView>(R.id.talkListContainer)
 
+        mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(errorHandlingListForCoroutine.createCoroutineExceptionHandler()) {
             withContext(Dispatchers.Default) {
                 if (talkRoomModel is DialogueTalkRoomModel) {
@@ -401,6 +413,7 @@ class TalkListInTalkRoomFragment : Fragment() {
             talkListContainer.removeView(talkView)
             closeTalkEditView()
         }
+        mainActivity.stopShowingProgressBar()
     }
 
     /**
@@ -460,6 +473,7 @@ class TalkListInTalkRoomFragment : Fragment() {
         }
 
         sendButton.setOnClickListener {
+            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(errorHandlingListForCoroutine.createCoroutineExceptionHandler()) {
                 if (!sendBoxValidateManager.doValidateList()) {
                     withContext(Dispatchers.Default) {
@@ -481,6 +495,7 @@ class TalkListInTalkRoomFragment : Fragment() {
                     contentEditText.setText("", TextView.BufferType.NORMAL)
                 }
             }
+            mainActivity.stopShowingProgressBar()
         }
     }
 

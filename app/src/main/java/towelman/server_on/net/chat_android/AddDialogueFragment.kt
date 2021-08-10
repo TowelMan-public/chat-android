@@ -136,6 +136,7 @@ class AddDialogueFragment : Fragment() {
         )
 
         //処理
+        mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(exceptionHandlingListForCoroutine.createCoroutineExceptionHandler()) {
             withContext(Dispatchers.Default) {
                 DialogueRestService.addDialogue(mainActivity.accountManager.getOauthToken(), userIdName)
@@ -144,6 +145,7 @@ class AddDialogueFragment : Fragment() {
             Toast.makeText(context , "${userIdName}さんを友達登録しました。", Toast.LENGTH_LONG).show()
             UpdateManager.getInstance().getUpdater(UpdateKeyConfig.TALK_ROOM_LIST).runUpdate()
         }
+        mainActivity.stopShowingProgressBar()
     }
 
     companion object {

@@ -152,6 +152,7 @@ class LoginFragment : Fragment() {
         }
 
         //処理
+        loginAndSignupActivity.startShowingProgressBar()
         CoroutineScope(loginAndSignupActivity.coroutineContext).launch(handlerList.createCoroutineExceptionHandler()) {
             withContext(Dispatchers.Default) {
                 UserRestService.login(userIdName, password)
@@ -160,6 +161,7 @@ class LoginFragment : Fragment() {
             loginAndSignupActivity.accountManager.addAccount(userIdName, password)
             loginAndSignupActivity.transitionMainActivity()
         }
+        loginAndSignupActivity.stopShowingProgressBar()
     }
 
     companion object {

@@ -17,6 +17,7 @@ import towelman.server_on.net.chat_android.client.exception.LoginException
 import towelman.server_on.net.chat_android.handler.ExceptionHandler
 import towelman.server_on.net.chat_android.service.UserRestService
 import towelman.server_on.net.chat_android.validate.*
+import kotlin.math.log
 
 
 /**
@@ -159,12 +160,14 @@ class SignupFragment : Fragment() {
         }
 
         //処理
+        loginAndSignupActivity.startShowingProgressBar()
         CoroutineScope(loginAndSignupActivity.coroutineContext).launch(handlerList.createCoroutineExceptionHandler()) {
             withContext(Dispatchers.Default) {
                 UserRestService.signup(userIdName, userName, password)
             }
             loginAndSignupActivity.showLoginFragment()
         }
+        loginAndSignupActivity.stopShowingProgressBar()
     }
 
     companion object {

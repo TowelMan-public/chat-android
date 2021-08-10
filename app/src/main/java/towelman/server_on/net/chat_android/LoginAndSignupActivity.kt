@@ -2,6 +2,8 @@ package towelman.server_on.net.chat_android
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
@@ -67,6 +69,20 @@ class LoginAndSignupActivity : AppCompatActivity() {
                 .setMessage("入力に不備があります。もう一度ご確認のほどよろしくお願いします。")
                 //.setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
                 .show()
+    }
+
+    /**
+     * グルグルの表示を始める
+     */
+    fun startShowingProgressBar(){
+        findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
+    }
+
+    /**
+     * グルグルの表示を止める
+     */
+    fun stopShowingProgressBar(){
+        findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
     }
 
     /**

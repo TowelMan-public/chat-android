@@ -135,12 +135,14 @@ class GroupDetailsFragment : Fragment() {
     private fun setValueToAllView(){
         val groupNameTextEdit = view!!.findViewById<TextView>(R.id.groupNameTextEdit)
 
+        mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
             val groupName = withContext(Dispatchers.Default) {
                 GroupRestService.getGroupName(mainActivity.accountManager.getOauthToken(), groupTalkRoomId)
             }
             groupNameTextEdit.setText(groupName, TextView.BufferType.NORMAL)
         }
+        mainActivity.stopShowingProgressBar()
     }
 
     /**
@@ -194,6 +196,7 @@ class GroupDetailsFragment : Fragment() {
 
         val userInGroupContainer = view!!.findViewById<LinearLayout>(R.id.userInGroupContainer)
 
+        mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
             withContext(Dispatchers.Default) {
                 GroupRestService.deleteUserInGroup(mainActivity.accountManager.getOauthToken(), groupTalkRoomId, userIdName)
@@ -201,6 +204,7 @@ class GroupDetailsFragment : Fragment() {
         }
 
         userInGroupContainer.removeView(userInGroupView)
+        mainActivity.stopShowingProgressBar()
     }
 
     /**
@@ -225,11 +229,13 @@ class GroupDetailsFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
                 withContext(Dispatchers.Default) {
                     GroupRestService.changeGroupName(mainActivity.accountManager.getOauthToken(), groupTalkRoomId, groupNameTextEdit.text.toString())
                 }
             }
+            mainActivity.stopShowingProgressBar()
         }
     }
 
@@ -240,6 +246,7 @@ class GroupDetailsFragment : Fragment() {
         val deleteGroupTextView = view!!.findViewById<TextView>(R.id.deleteGroupTextView)
 
         deleteGroupTextView.setOnClickListener {
+            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
                 withContext(Dispatchers.Default) {
                     GroupRestService.deleteGroup(mainActivity.accountManager.getOauthToken(), groupTalkRoomId)
@@ -247,6 +254,7 @@ class GroupDetailsFragment : Fragment() {
             }
 
             homeFragment.closeChildFragment()
+            mainActivity.stopShowingProgressBar()
         }
     }
 
@@ -257,6 +265,7 @@ class GroupDetailsFragment : Fragment() {
         val exitGroupTextView = view!!.findViewById<TextView>(R.id.exitGroupTextView)
 
         exitGroupTextView.setOnClickListener {
+            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
                 withContext(Dispatchers.Default) {
                     GroupRestService.exitGroup(mainActivity.accountManager.getOauthToken(), groupTalkRoomId)
@@ -264,6 +273,7 @@ class GroupDetailsFragment : Fragment() {
             }
 
             homeFragment.closeChildFragment()
+            mainActivity.stopShowingProgressBar()
         }
     }
 
@@ -317,12 +327,14 @@ class GroupDetailsFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(exceptionHandlerList.createCoroutineExceptionHandler()) {
                 withContext(Dispatchers.Default) {
                     GroupRestService.invitationUserToGroup(mainActivity.accountManager.getOauthToken(),
                             groupTalkRoomId, userIdNameForInvitationTextEdit.text.toString())
                 }
             }
+            mainActivity.stopShowingProgressBar()
         }
     }
 
