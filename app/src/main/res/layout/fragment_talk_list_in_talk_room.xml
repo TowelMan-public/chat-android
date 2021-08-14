@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".TalkListInTalkRoomFragment">
 
     <LinearLayout
@@ -12,12 +13,14 @@
         android:weightSum="1"
         tools:ignore="UselessParent">
 
-        <TalkListTitleView
+        <towelman.server_on.net.chat_android.TalkListTitleView
             android:id="@+id/talkListTitleView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.1"
             android:background="#373737" />
+
+
 
         <LinearLayout
             android:id="@+id/menuContainer"
@@ -104,7 +107,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.2"
                     android:text="@string/send"
-                    android:textSize="20sp" />
+                    app:autoSizeMinTextSize="8sp"
+                    app:autoSizeMaxTextSize="20dp"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"/>
 
             </LinearLayout>
 

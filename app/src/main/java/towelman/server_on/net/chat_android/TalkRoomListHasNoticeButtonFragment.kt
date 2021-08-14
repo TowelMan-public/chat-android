@@ -52,22 +52,22 @@ class TalkRoomListHasNoticeButtonFragment : Fragment() {
         val talkRoomListUpdater = updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
 
         //TalkRoomListの更新後に実行すること
-        talkRoomListUpdater.successDelegateList[javaClass.name] = {
+        talkRoomListUpdater.successDelegateList[this::class.java.name] = {
             talkRoomListContainer.removeAllViews()
 
             //Vewたちのセット
-            it!![DialogueTalkRoomModel::javaClass.name]!!.forEach { model ->
+            it!![DialogueTalkRoomModel::class.java.name]!!.forEach { model ->
                 if(model.noticeCount > 0)
                     addTalkRoomViewToContainer(talkRoomListContainer, model)
             }
-            it[GroupTalkRoomModel::javaClass.name]!!.forEach { model ->
+            it[GroupTalkRoomModel::class.java.name]!!.forEach { model ->
                 if(model.noticeCount > 0)
                     addTalkRoomViewToContainer(talkRoomListContainer, model)
             }
-            it[DesireDialogueTalkRoomModel::javaClass.name]!!.forEach { model ->
+            it[DesireDialogueTalkRoomModel::class.java.name]!!.forEach { model ->
                 addTalkRoomViewToContainer(talkRoomListContainer, model)
             }
-            it[DesireGroupTalkRoomModel::javaClass.name]!!.forEach { model ->
+            it[DesireGroupTalkRoomModel::class.java.name]!!.forEach { model ->
                 addTalkRoomViewToContainer(talkRoomListContainer, model)
             }
         }
@@ -83,7 +83,7 @@ class TalkRoomListHasNoticeButtonFragment : Fragment() {
 
         if(updateManager.isEnableUpdater(UpdateKeyConfig.TALK_ROOM_LIST)) {
             val talkRoomListUpdater = updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
-            talkRoomListUpdater.successDelegateList.remove(javaClass.name)
+            talkRoomListUpdater.successDelegateList.remove(this::class.java.name)
         }
     }
 

@@ -38,6 +38,8 @@ import towelman.server_on.net.chat_android.validate.NotBlankValidatable
  * create an instance of this fragment.
  */
 class LoginFragment : Fragment() {
+    private lateinit var thisView: View
+
     /**
      * このFragmentのActivityにアクセスしやすいようにするためのプロパティー
      */
@@ -63,6 +65,7 @@ class LoginFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        thisView = view
 
         //各必要なViewの取得
         val userIdNameTextEdit = view.findViewById<EditText>(R.id.userIdNameTextEdit)
@@ -127,8 +130,8 @@ class LoginFragment : Fragment() {
      */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val userIdNameTextEdit = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
-        val passwordTextEdit = view!!.findViewById<EditText>(R.id.passwordTextEdit)
+        val userIdNameTextEdit = thisView.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val passwordTextEdit = thisView.findViewById<EditText>(R.id.passwordTextEdit)
 
         outState.putCharSequence("userIdNameTextEdit.text", userIdNameTextEdit.text)
         outState.putCharSequence("passwordTextEdit.text", passwordTextEdit.text)

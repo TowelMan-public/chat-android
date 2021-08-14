@@ -1,5 +1,6 @@
 package towelman.server_on.net.chat_android
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.app.job.JobInfo
@@ -8,14 +9,19 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.icu.text.DateTimePatternGenerator.PatternInfo.OK
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.view.View
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import towelman.server_on.net.chat_android.account.AccountManagerAdapterForTowelman
 import towelman.server_on.net.chat_android.client.exception.HttpException
 import towelman.server_on.net.chat_android.client.exception.NetworkOfflineException
@@ -72,17 +78,19 @@ class MainActivity : AppCompatActivity() {
         UpdateManager.getInstance().deleteUpdaterAll()
 
         //サービスの開始
-        val scheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
-        val componentName = ComponentName(this,
-                TalkRoomListNoticeJobService::class.java)
-        val jobInfo = JobInfo.Builder(TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID, componentName)
-                .apply {
-                    setBackoffCriteria(10000, JobInfo.BACKOFF_POLICY_LINEAR)
-                    setPersisted(true)
-                    setPeriodic(60000 * 10)
-                    setRequiresCharging(false)
-                }.build()
-        scheduler.schedule(jobInfo)
+        if(accountManager.haveAccount) {
+            val scheduler = getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
+            val componentName = ComponentName(this,
+                    TalkRoomListNoticeJobService::class.java)
+            val jobInfo = JobInfo.Builder(TALK_ROOM_LIST_NOTICE_JOB_SERVICE_ID, componentName)
+                    .apply {
+                        setBackoffCriteria(10000, JobInfo.BACKOFF_POLICY_LINEAR)
+                        setPersisted(true)
+                        setPeriodic(60000 * 1)
+                        setRequiresCharging(false)
+                    }.build()
+            scheduler.schedule(jobInfo)
+        }
     }
 
     /**
@@ -159,16 +167,70 @@ class MainActivity : AppCompatActivity() {
             TalkRoomListNoticeJobService.getTalkRoomList(this)
         }
 
-        talkRoomUpdater.successDelegateList[javaClass.name] = {
+        talkRoomUpdater.successDelegateList[this::class.java.name] = {
             val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             TalkRoomListNoticeJobService.pushNotice(this, notificationManager, it!!)
         }
+
+        showNotification(this, this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager, 1, "test")
 
         talkRoomUpdater.exceptionHandlingList = getExceptionHandlingListForCoroutine()
 
         val updateManager = UpdateManager.getInstance()
         updateManager.addUpdater(UpdateKeyConfig.TALK_ROOM_LIST, talkRoomUpdater)
         updateManager.setUpdateTimeSpan(UpdateKeyConfig.TALK_ROOM_LIST, 60000 * 5)
+    }
+
+    /**
+     * 通知画面を表示する
+     *
+     * @param context 呼び出し元のコンテキスト
+     * @param notificationManager 通知マネージャー
+     * @param notificationId 通知ID
+     * @param contentText 通知の内容
+     */
+    private fun showNotification(context: Context, notificationManager: NotificationManager, notificationId: Int, contentText: String){
+            createNotificationChannel(notificationManager)
+            //deleteNotification(notificationManager, notificationId)
+
+            //通知の作成
+            val notification = NotificationCompat.Builder(context, "towelman_chat_notification")
+                    .setContentTitle("チャット♪")
+                    .setContentText(contentText)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .build()
+
+            //通知の登録
+            with(NotificationManagerCompat.from(context)) {
+                notify(notificationId, notification)
+            }
+    }
+
+    /**
+     * 通知チャンネルの作成
+     * 作成する必要がなければ作成しない
+     *
+     * @param notificationManager 通知マネージャー
+     */
+    private fun createNotificationChannel(notificationManager: NotificationManager){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                    notificationManager.getNotificationChannel("towelman_chat_notification") == null) {
+
+                notificationManager.createNotificationChannel(
+                        NotificationChannel("towelman_chat_notification",
+                                "チャット♪",
+                                NotificationManager.IMPORTANCE_LOW))
+            }
+    }
+
+    /**
+     * 通知の削除
+     *
+     * @param notificationManager 通知マネージャー
+     * @param notificationId 通知ID
+     */
+    private fun deleteNotification(notificationManager: NotificationManager, notificationId: Int){
+            notificationManager.cancel(notificationId)
     }
 
     /**

@@ -49,7 +49,7 @@ private constructor() {
         fun getTalk(oauthToken: String, haveUserIdName: String, talkIndex: Int): TalkResponse {
             val url = "$ROOT_URL/get"
             val dto = Dto(haveUserIdName, null, talkIndex)
-            return restTemplate.getWhenLogined(oauthToken, url, dto)
+            return restTemplate.getWhenLogined(oauthToken, url, dto, TalkResponse::class.java)
         }
 
         /**

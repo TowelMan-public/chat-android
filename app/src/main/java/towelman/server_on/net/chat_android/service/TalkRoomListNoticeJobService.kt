@@ -83,9 +83,8 @@ class TalkRoomListNoticeJobService : JobService() {
     }
 
     companion object{
-        private const val NORMAL_NOTIFICATION_ID = 1
-        private const val WARNING_NOTIFICATION_ID = 2
-
+        private const val NORMAL_NOTIFICATION_ID = 6798
+        private const val WARNING_NOTIFICATION_ID = 54823
         private const val NOTIFICATION_ID = "towelman_chat_notification"
         private const val NOTIFICATION_NAME = "チャット♪"
 
@@ -93,40 +92,40 @@ class TalkRoomListNoticeJobService : JobService() {
          *　全てのトークルームリストを取得する
          *
          * @param context 呼び出し元のコンテキスト
-         * @return 全てのトークルームリスト（最初の[]にDialogueTalkRoomModel等のクラスの「javaClass.name」を指定して使う）
+         * @return 全てのトークルームリスト（最初の[]にDialogueTalkRoomModel等のクラスの「class.java.name」を指定して使う）
          */
         fun getTalkRoomList(context: Context): MutableMap<String, MutableList<TalkRoomModel>>{
             val accountManagerAdapter = AccountManagerAdapterForTowelman(context)
 
             val modelLists: MutableMap<String, MutableList<TalkRoomModel>> = mutableMapOf()
-            modelLists[DialogueTalkRoomModel::javaClass.name] = mutableListOf()
-            modelLists[GroupTalkRoomModel::javaClass.name] = mutableListOf()
-            modelLists[DesireDialogueTalkRoomModel::javaClass.name] = mutableListOf()
-            modelLists[DesireGroupTalkRoomModel::javaClass.name] = mutableListOf()
+            modelLists[DialogueTalkRoomModel::class.java.name] = mutableListOf()
+            modelLists[GroupTalkRoomModel::class.java.name] = mutableListOf()
+            modelLists[DesireDialogueTalkRoomModel::class.java.name] = mutableListOf()
+            modelLists[DesireGroupTalkRoomModel::class.java.name] = mutableListOf()
 
             //友達トークルームリスト取得
             UserInDialogueApi.getUserInDialogueList(accountManagerAdapter.getOauthToken()).forEach {
-                modelLists[DialogueTalkRoomModel::javaClass.name]!!
+                modelLists[DialogueTalkRoomModel::class.java.name]!!
                         .add(DialogueTalkRoomModel(it.haveUserName, it.myLastTalkIndex, it.haveUserIdName,
-                                it.talkLastIndex - it.myLastTalkIndex))
+                                it.talkLastTalkIndex - it.myLastTalkIndex))
             }
 
             //グループトークルームリスト取得
             GroupApi.getGroups(accountManagerAdapter.getOauthToken()).forEach{
-                modelLists[GroupTalkRoomModel::javaClass.name]!!
+                modelLists[GroupTalkRoomModel::class.java.name]!!
                         .add(GroupTalkRoomModel(it.groupName, it.userLastTalkIndex, it.talkRoomId,
                                 it.groupLastTalkIndex - it.userLastTalkIndex))
             }
 
             //友達追加申請者とのトークルームリスト
             DesireUserApi.getDesireUserList(accountManagerAdapter.getOauthToken()).forEach {
-                modelLists[DesireDialogueTalkRoomModel::javaClass.name]!!
+                modelLists[DesireDialogueTalkRoomModel::class.java.name]!!
                         .add(DesireDialogueTalkRoomModel(it.haveUserName, it.lastTalkIndex, it.haveUserIdName,0))
             }
 
             //勧誘されているグループのトークルームリスト取得
             DesireGroupApi.getDesireUserList(accountManagerAdapter.getOauthToken()).forEach {
-                modelLists[DesireGroupTalkRoomModel::javaClass.name]!!
+                modelLists[DesireGroupTalkRoomModel::class.java.name]!!
                         .add(DesireGroupTalkRoomModel(it.groupName, it.lastTalkIndex, it.talkRoomId,0))
             }
 
@@ -141,23 +140,25 @@ class TalkRoomListNoticeJobService : JobService() {
          * @param allTalkRoomList 全てのトークルームリスト
          */
         fun pushNotice(context: Context, notificationManager: NotificationManager,  allTalkRoomList: MutableMap<String, MutableList<TalkRoomModel>>){
-            //通知の合計数を取得する
-            var noticeSum = 0
-            allTalkRoomList[DialogueTalkRoomModel::javaClass.name]!!.forEach { model ->
-                noticeSum += model.noticeCount
-            }
-            allTalkRoomList[GroupTalkRoomModel::javaClass.name]!!.forEach { model ->
-                noticeSum += model.noticeCount
-            }
+            CoroutineScope(Dispatchers.Main.immediate).launch() {
+                //通知の合計数を取得する
+                var noticeSum = 0
+                allTalkRoomList[DialogueTalkRoomModel::class.java.name]!!.forEach { model ->
+                    noticeSum += model.noticeCount
+                }
+                allTalkRoomList[GroupTalkRoomModel::class.java.name]!!.forEach { model ->
+                    noticeSum += model.noticeCount
+                }
 
-            if(noticeSum != 0)
-                showNotification(context, notificationManager, NORMAL_NOTIFICATION_ID, "あなた宛てに未読のチャットが${noticeSum}件あります")
-            else
-                deleteNotification(notificationManager, NORMAL_NOTIFICATION_ID)
+                if (noticeSum != 0)
+                    showNotification(context, notificationManager, NORMAL_NOTIFICATION_ID, "あなた宛てに未読のチャットが${noticeSum}件あります")
+                else
+                    deleteNotification(notificationManager, NORMAL_NOTIFICATION_ID)
+            }
         }
 
         /**
-         * 通帳画面を表示する
+         * 通知画面を表示する
          *
          * @param context 呼び出し元のコンテキスト
          * @param notificationManager 通知マネージャー
@@ -165,19 +166,21 @@ class TalkRoomListNoticeJobService : JobService() {
          * @param contentText 通知の内容
          */
         private fun showNotification(context: Context, notificationManager: NotificationManager, notificationId: Int, contentText: String){
-            createNotificationChannel(notificationManager)
-            deleteNotification(notificationManager, notificationId)
+            CoroutineScope(Dispatchers.Main.immediate).launch() {
+                createNotificationChannel(notificationManager)
 
-            //通知の作成
-            val notification = NotificationCompat.Builder(context, NOTIFICATION_ID)
-                    .setContentTitle(NOTIFICATION_NAME)
-                    .setContentText(contentText)
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
-                    .build()
+                //通知の作成
+                val notification = NotificationCompat.Builder(context, NOTIFICATION_ID)
+                        .setSmallIcon(R.drawable.now_talk_rooms_talk_list)
+                        .setContentTitle(NOTIFICATION_NAME)
+                        .setContentText(contentText)
+                        .setPriority(NotificationCompat.PRIORITY_LOW)
+                        .build()
 
-            //通知の登録
-            with(NotificationManagerCompat.from(context)) {
-                notify(notificationId, notification)
+                //通知の登録
+                with(NotificationManagerCompat.from(context)) {
+                    notify(notificationId, notification)
+                }
             }
         }
 
@@ -188,13 +191,17 @@ class TalkRoomListNoticeJobService : JobService() {
          * @param notificationManager 通知マネージャー
          */
         private fun createNotificationChannel(notificationManager: NotificationManager){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                    notificationManager.getNotificationChannel(NOTIFICATION_ID) != null) {
+            CoroutineScope(Dispatchers.Main.immediate).launch() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                        notificationManager.getNotificationChannel(NOTIFICATION_ID) == null) {
 
-                notificationManager.createNotificationChannel(
-                        NotificationChannel(NOTIFICATION_ID,
-                                NOTIFICATION_NAME,
-                                NotificationManager.IMPORTANCE_LOW))
+                    notificationManager.createNotificationChannel(
+                            NotificationChannel(NOTIFICATION_ID,
+                                    NOTIFICATION_NAME,
+                                    NotificationManager.IMPORTANCE_LOW).apply {
+                                description = "チャットアプリの通知"
+                            })
+                }
             }
         }
 
@@ -205,7 +212,9 @@ class TalkRoomListNoticeJobService : JobService() {
          * @param notificationId 通知ID
          */
         private fun deleteNotification(notificationManager: NotificationManager, notificationId: Int){
-            notificationManager.cancel(notificationId)
+            CoroutineScope(Dispatchers.Main.immediate).launch() {
+                notificationManager.cancel(notificationId)
+            }
         }
     }
 }

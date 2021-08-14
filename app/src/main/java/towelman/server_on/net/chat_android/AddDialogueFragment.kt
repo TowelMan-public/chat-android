@@ -35,6 +35,8 @@ import towelman.server_on.net.chat_android.validate.NotBlankValidatable
  */
 class AddDialogueFragment : Fragment() {
 
+    private lateinit var thisView: View
+
     /**
      * このFragmentのActivityにアクセスしやすいようにするためのプロパティー
      */
@@ -60,6 +62,7 @@ class AddDialogueFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        thisView = view
 
         val userIdNameTextEdit = view.findViewById<EditText>(R.id.userIdNameTextEdit)
         val addDialogueButton = view.findViewById<Button>(R.id.addDialogueButton)
@@ -105,7 +108,7 @@ class AddDialogueFragment : Fragment() {
      */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val userIdNameTextEdit = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val userIdNameTextEdit = thisView.findViewById<EditText>(R.id.userIdNameTextEdit)
         outState.putCharSequence("userIdNameTextEdit.text", userIdNameTextEdit.text)
     }
 

@@ -9,7 +9,15 @@ import android.widget.TextView
 /**
  * リスト表示などに使うタイトルの部分
  */
-class ListTitleView(context: Context, attributeSet: AttributeSet) : LinearLayout(context, attributeSet) {
+class TitleView(context: Context, attrs: AttributeSet?) : LinearLayout(context, attrs) {
+
+    init {
+        View.inflate(context, R.layout.title_view, this)
+
+        val isOpenedTextVew = findViewById<TextView>(R.id.isOpenedTextVew)
+        isOpenedTextVew.setText("▽", TextView.BufferType.NORMAL)
+    }
+
     /**
      * このタイトルに対応するリストが表示されているかどうかのセット<br>
      * 表示されていればtrue、表示されていなければfalse
@@ -24,12 +32,7 @@ class ListTitleView(context: Context, attributeSet: AttributeSet) : LinearLayout
                 isOpenedTextVew.setText("▽", TextView.BufferType.NORMAL)
         }
 
-    init {
-        View.inflate(context, R.layout.list_title_view, this)
 
-        val isOpenedTextVew = findViewById<TextView>(R.id.isOpenedTextVew)
-        isOpenedTextVew.setText("▽", TextView.BufferType.NORMAL)
-    }
 
     /**
      * タイトルをセットする

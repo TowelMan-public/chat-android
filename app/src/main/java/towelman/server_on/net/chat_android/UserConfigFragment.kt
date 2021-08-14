@@ -28,7 +28,8 @@ import towelman.server_on.net.chat_android.validate.*
  * create an instance of this fragment.
  */
 class UserConfigFragment : Fragment() {
-    private var isCreated: Boolean = false
+    private lateinit var thisView: View
+    //private var isCreated: Boolean = false
 
     private val homeFragment: HomeFragment
         get() = parentFragment as HomeFragment
@@ -42,8 +43,6 @@ class UserConfigFragment : Fragment() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        isCreated = savedInstanceState!!.getBoolean("isCreated")
     }
 
     /**
@@ -67,10 +66,10 @@ class UserConfigFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        thisView = view
 
-        if(isCreated)
-            restoreInstanceState(savedInstanceState!!)
-        else
+        if(savedInstanceState != null)
+            restoreInstanceState(savedInstanceState)
             setValueToAllEditTextView()
 
         setConfigToUserIdNameChangeButton()
@@ -87,10 +86,10 @@ class UserConfigFragment : Fragment() {
      */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val userIdNameEditText = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
-        val userNameTextEdit = view!!.findViewById<EditText>(R.id.userNameTextEdit)
-        val passwordTextEdit = view!!.findViewById<EditText>(R.id.passwordTextEdit)
-        val oneMorePasswordTextEdit = view!!.findViewById<EditText>(R.id.oneMorePasswordTextEdit)
+        val userIdNameEditText = thisView.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val userNameTextEdit = thisView.findViewById<EditText>(R.id.userNameTextEdit)
+        val passwordTextEdit = thisView.findViewById<EditText>(R.id.passwordTextEdit)
+        val oneMorePasswordTextEdit = thisView.findViewById<EditText>(R.id.oneMorePasswordTextEdit)
 
         outState.putBoolean("isCreated", true)
         outState.putCharSequence("userIdNameEditText.text", userIdNameEditText.text)
@@ -100,13 +99,17 @@ class UserConfigFragment : Fragment() {
     }
 
     private fun setValueToAllEditTextView(){
-        val userIdNameEditText = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
-        val userNameTextEdit = view!!.findViewById<EditText>(R.id.userNameTextEdit)
+        val userIdNameEditText = thisView.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val userNameTextEdit = thisView.findViewById<EditText>(R.id.userNameTextEdit)
 
         userIdNameEditText.setText(mainActivity.accountManager.userIdName)
-        userNameTextEdit.setText(
-            UserRestService.getUserName(mainActivity.accountManager.getOauthToken(), mainActivity.accountManager.userIdName),
-            TextView.BufferType.NORMAL)
+
+        CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
+            val userName = withContext(Dispatchers.Default) {
+                UserRestService.getUserName(mainActivity.accountManager.getOauthToken(), mainActivity.accountManager.userIdName)
+            }
+            userNameTextEdit.setText(userName, TextView.BufferType.NORMAL)
+        }
     }
 
     /**
@@ -115,10 +118,10 @@ class UserConfigFragment : Fragment() {
      * @param savedInstanceState このActivityで保持するべき情報・状態
      */
     private fun restoreInstanceState(savedInstanceState: Bundle) {
-        val userIdNameEditText = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
-        val userNameTextEdit = view!!.findViewById<EditText>(R.id.userNameTextEdit)
-        val passwordTextEdit = view!!.findViewById<EditText>(R.id.passwordTextEdit)
-        val oneMorePasswordTextEdit = view!!.findViewById<EditText>(R.id.oneMorePasswordTextEdit)
+        val userIdNameEditText = thisView.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val userNameTextEdit = thisView.findViewById<EditText>(R.id.userNameTextEdit)
+        val passwordTextEdit = thisView.findViewById<EditText>(R.id.passwordTextEdit)
+        val oneMorePasswordTextEdit = thisView.findViewById<EditText>(R.id.oneMorePasswordTextEdit)
 
         userIdNameEditText.text = savedInstanceState.getCharSequence("userIdNameEditText.text") as Editable
         userNameTextEdit.text = savedInstanceState.getCharSequence("userNameTextEdit.text") as Editable
@@ -130,8 +133,8 @@ class UserConfigFragment : Fragment() {
      * ユーザーID名を変更するボタンの設定
      */
     private fun setConfigToUserIdNameChangeButton(){
-        val userIdNameChangeButton = view!!.findViewById<Button>(R.id.userIdNameChangeButton)
-        val userIdNameEditText = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val userIdNameChangeButton = thisView.findViewById<Button>(R.id.userIdNameChangeButton)
+        val userIdNameEditText = thisView.findViewById<EditText>(R.id.userIdNameTextEdit)
 
         //バリデーションチェックの設定
         val validateManager = EditTextValidateManager().apply {
@@ -178,8 +181,8 @@ class UserConfigFragment : Fragment() {
      * ユーザー名を変更するボタンの設定
      */
     private fun setConfigToUserNameChangeButton(){
-        val userNameChangeButton = view!!.findViewById<Button>(R.id.userNameChangeButton)
-        val userNameTextEdit = view!!.findViewById<EditText>(R.id.userNameTextEdit)
+        val userNameChangeButton = thisView.findViewById<Button>(R.id.userNameChangeButton)
+        val userNameTextEdit = thisView.findViewById<EditText>(R.id.userNameTextEdit)
 
         //バリデーションチェックの設定
         val validateManager = EditTextValidateManager().apply {
@@ -211,9 +214,9 @@ class UserConfigFragment : Fragment() {
      * パスワードを変更するボタンの設定
      */
     private fun setConfigToPasswordChangeButton(){
-        val passwordChangeButton = view!!.findViewById<Button>(R.id.passwordChangeButton)
-        val passwordTextEdit = view!!.findViewById<EditText>(R.id.passwordTextEdit)
-        val oneMorePasswordTextEdit = view!!.findViewById<EditText>(R.id.oneMorePasswordTextEdit)
+        val passwordChangeButton = thisView.findViewById<Button>(R.id.passwordChangeButton)
+        val passwordTextEdit = thisView.findViewById<EditText>(R.id.passwordTextEdit)
+        val oneMorePasswordTextEdit = thisView.findViewById<EditText>(R.id.oneMorePasswordTextEdit)
 
         //バリデーションチェックの設定
         val validateManager = EditTextValidateManager().apply {
@@ -243,6 +246,8 @@ class UserConfigFragment : Fragment() {
                 }
 
                 mainActivity.accountManager.password = passwordTextEdit.text.toString()
+                passwordTextEdit.setText("", TextView.BufferType.NORMAL)
+                oneMorePasswordTextEdit.setText("", TextView.BufferType.NORMAL)
             }
             mainActivity.stopShowingProgressBar()
         }
@@ -252,7 +257,7 @@ class UserConfigFragment : Fragment() {
      * ログアウトを促す文章(TextView)の設定
      */
     private fun setConfigToLogoutTextView(){
-        val logoutTextView = view!!.findViewById<TextView>(R.id.logoutTextView)
+        val logoutTextView = thisView.findViewById<TextView>(R.id.logoutTextView)
 
         logoutTextView.setOnClickListener {
             mainActivity.finishForLogout()
@@ -263,7 +268,7 @@ class UserConfigFragment : Fragment() {
      * 退会を促す文章(TextView)の設定
      */
     private fun setConfigWithdrawalTextView(){
-        val withdrawalTextView = view!!.findViewById<TextView>(R.id.withdrawalTextView)
+        val withdrawalTextView = thisView.findViewById<TextView>(R.id.withdrawalTextView)
 
         withdrawalTextView.setOnClickListener {
             homeFragment.showWithdrawalFragment()

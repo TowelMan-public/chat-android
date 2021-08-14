@@ -45,10 +45,10 @@ class TalkRoomListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         //各種必要なもの取得
         val talkRoomListUpdater = updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
-        val dialogueTalkRoomListContainerTitle = view.findViewById<ListTitleView>(R.id.dialogueTalkRoomListContainerTitle)
-        val groupTalkRoomListContainerTitle = view.findViewById<ListTitleView>(R.id.groupTalkRoomListContainerTitle)
-        val desireDialogueTalkRoomListContainerTitle = view.findViewById<ListTitleView>(R.id.desireDialogueTalkRoomListContainerTitle)
-        val desireGroupTalkRoomListContainerTitle = view.findViewById<ListTitleView>(R.id.desireGroupTalkRoomListContainerTitle)
+        val dialogueTalkRoomListContainerTitle = view.findViewById<TitleView>(R.id.dialogueTalkRoomListContainerTitle)
+        val groupTalkRoomListContainerTitle = view.findViewById<TitleView>(R.id.groupTalkRoomListContainerTitle)
+        val desireDialogueTalkRoomListContainerTitle = view.findViewById<TitleView>(R.id.desireDialogueTalkRoomListContainerTitle)
+        val desireGroupTalkRoomListContainerTitle = view.findViewById<TitleView>(R.id.desireGroupTalkRoomListContainerTitle)
         val dialogueTalkRoomListContainer = view.findViewById<LinearLayout>(R.id.dialogueTalkRoomListContainer)
         val groupTalkRoomListContainer = view.findViewById<LinearLayout>(R.id.groupTalkRoomListContainer)
         val desireDialogueTalkRoomListContainer = view.findViewById<LinearLayout>(R.id.desireDialogueTalkRoomListContainer)
@@ -73,7 +73,7 @@ class TalkRoomListFragment : Fragment() {
         }
 
         //TalkRoomListの更新後に実行すること
-        talkRoomListUpdater.successDelegateList[javaClass.name] = {
+        talkRoomListUpdater.successDelegateList[this::class.java.name] = {
             //初期化
             dialogueTalkRoomListContainer.removeAllViews()
             groupTalkRoomListContainer.removeAllViews()
@@ -81,16 +81,16 @@ class TalkRoomListFragment : Fragment() {
             desireGroupTalkRoomListContainer.removeAllViews()
 
             //Vewたちのセット
-            it!![DialogueTalkRoomModel::javaClass.name]!!.forEach { model ->
+            it!![DialogueTalkRoomModel::class.java.name]!!.forEach { model ->
                 addTalkRoomViewToContainer(dialogueTalkRoomListContainer, model)
             }
-            it[GroupTalkRoomModel::javaClass.name]!!.forEach { model ->
+            it[GroupTalkRoomModel::class.java.name]!!.forEach { model ->
                 addTalkRoomViewToContainer(groupTalkRoomListContainer, model)
             }
-            it[DesireDialogueTalkRoomModel::javaClass.name]!!.forEach { model ->
+            it[DesireDialogueTalkRoomModel::class.java.name]!!.forEach { model ->
                 addTalkRoomViewToContainer(desireDialogueTalkRoomListContainer, model)
             }
-            it[DesireGroupTalkRoomModel::javaClass.name]!!.forEach { model ->
+            it[DesireGroupTalkRoomModel::class.java.name]!!.forEach { model ->
                 addTalkRoomViewToContainer(desireGroupTalkRoomListContainer, model)
             }
         }
@@ -106,20 +106,22 @@ class TalkRoomListFragment : Fragment() {
 
         if(updateManager.isEnableUpdater(UpdateKeyConfig.TALK_ROOM_LIST)) {
             val talkRoomListUpdater = updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
-            talkRoomListUpdater.successDelegateList.remove(javaClass.name)
+            talkRoomListUpdater.successDelegateList.remove(this::class.java.name)
         }
     }
 
     /**
      * container（LinearLayout）の表示、非表示をlistTitleViewの従って変更する
      */
-    private fun switchContainerVisible(container: LinearLayout, listTitleView: ListTitleView){
-        listTitleView.isOpened = !listTitleView.isOpened
-
-        if(listTitleView.isOpened)
-            container.visibility = View.VISIBLE
-        else
+    private fun switchContainerVisible(container: LinearLayout, listTitleView: TitleView){
+        if(listTitleView.isOpened) {
+            listTitleView.isOpened = false
             container.visibility = View.GONE
+        }
+        else {
+            listTitleView.isOpened = true
+            container.visibility = View.VISIBLE
+        }
     }
 
     /**
@@ -130,7 +132,7 @@ class TalkRoomListFragment : Fragment() {
      */
     private fun addTalkRoomViewToContainer(container: LinearLayout, talkRoomModel: TalkRoomModel){
         //View作成
-        val talkRoomView = TalkRoomView(activity!!).apply {
+        val talkRoomView = TalkRoomView(container.context!!).apply {
             setTalkRoomName(talkRoomModel.name)
             setTalkRoomNoticeCount(talkRoomModel.noticeCount)
             layoutParams = LinearLayout.LayoutParams(

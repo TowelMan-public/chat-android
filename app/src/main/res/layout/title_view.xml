@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:orientation="horizontal"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:gravity="center|top">
 
         <TextView
             android:id="@+id/titleTextView"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="30sp" />
+            android:layout_height="match_parent"
+            android:textSize="12sp"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeMaxTextSize="30dp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"/>
         <TextView
             android:id="@+id/isOpenedTextVew"
             android:layout_weight="0.2"
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:textAlignment="center"
             android:textSize="30sp"
             app:autoSizeTextType="uniform"
@@ -27,4 +31,3 @@
             app:autoSizeMaxTextSize="100sp"/>
 
     </LinearLayout>
-</merge>

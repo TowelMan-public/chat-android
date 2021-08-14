@@ -25,7 +25,7 @@ private constructor() {
          */
         fun getDesireUserList(oauthToken: String): List<DesireHaveUserResponse> {
             val url = "$ROOT_URL/gets"
-            return restTemplate.getWhenLogined(oauthToken, url, null)
+            return restTemplate.getListWhenLogined(oauthToken, url, null, DesireHaveUserResponse::class.java)
         }
 
         /**
@@ -39,7 +39,7 @@ private constructor() {
         fun getDesireUser(oauthToken: String, haveUserIdName: String): DesireHaveUserResponse {
             val url = "$ROOT_URL/get"
             val dto = Dto(haveUserIdName)
-            return restTemplate.getWhenLogined(oauthToken, url, dto)
+            return restTemplate.getWhenLogined(oauthToken, url, dto, DesireHaveUserResponse::class.java)
         }
 
         /**

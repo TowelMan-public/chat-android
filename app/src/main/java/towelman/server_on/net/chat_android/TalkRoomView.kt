@@ -10,7 +10,11 @@ import android.widget.TextView
 /**
  * トークルームのView
  */
-class TalkRoomView(context : Context) : LinearLayout(context) {
+class TalkRoomView : LinearLayout {
+
+    constructor(context: Context): this(context, null)
+    constructor(context: Context, attrs: AttributeSet?): super(context, attrs)
+
     init {
         View.inflate(context, R.layout.talk_room_view, this)
     }
@@ -30,6 +34,11 @@ class TalkRoomView(context : Context) : LinearLayout(context) {
      * @param talkRoomNoticeCount トークルームの通知数
      */
     fun setTalkRoomNoticeCount(talkRoomNoticeCount: Int){
-        findViewById<TextView>(R.id.talkRoomNoticeTextView).setText(talkRoomNoticeCount.toString(), TextView.BufferType.NORMAL)
+        val talkRoomNoticeTextView = findViewById<TextView>(R.id.talkRoomNoticeTextView)
+
+        if(talkRoomNoticeCount == 0)
+            talkRoomNoticeTextView.visibility = View.GONE
+        else
+            talkRoomNoticeTextView.setText(talkRoomNoticeCount.toString(), TextView.BufferType.NORMAL)
     }
 }

@@ -27,6 +27,8 @@ import kotlin.math.log
  * create an instance of this fragment.
  */
 class SignupFragment : Fragment() {
+    private lateinit var thisView: View
+
     /**
      * このFragmentのActivityにアクセスしやすいようにするためのプロパティー
      */
@@ -52,6 +54,7 @@ class SignupFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        thisView = view
 
         //各必要なViewの取得
         val userIdNameTextEdit = view.findViewById<EditText>(R.id.userIdNameTextEdit)
@@ -130,10 +133,10 @@ class SignupFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        val userIdNameTextEdit = view!!.findViewById<EditText>(R.id.userIdNameTextEdit)
-        val userNameTextEdit = view!!.findViewById<EditText>(R.id.userNameTextEdit)
-        val passwordTextEdit = view!!.findViewById<EditText>(R.id.passwordTextEdit)
-        val oneMorePasswordTextEdit = view!!.findViewById<EditText>(R.id.oneMorePasswordTextEdit)
+        val userIdNameTextEdit = thisView.findViewById<EditText>(R.id.userIdNameTextEdit)
+        val userNameTextEdit = thisView.findViewById<EditText>(R.id.userNameTextEdit)
+        val passwordTextEdit = thisView.findViewById<EditText>(R.id.passwordTextEdit)
+        val oneMorePasswordTextEdit = thisView.findViewById<EditText>(R.id.oneMorePasswordTextEdit)
 
         outState.putCharSequence("userIdNameTextEdit.text", userIdNameTextEdit.text)
         outState.putCharSequence("userNameTextEdit.text", userNameTextEdit.text)

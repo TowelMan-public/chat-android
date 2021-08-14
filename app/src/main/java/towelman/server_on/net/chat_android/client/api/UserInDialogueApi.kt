@@ -28,7 +28,7 @@ private constructor() {
          */
         fun getUserInDialogueList(oauthToken: String): List<HaveUserResponse> {
             val url = "$ROOT_URL/gets"
-            return restTemplate.getWhenLogined(oauthToken, url, null)
+            return restTemplate.getListWhenLogined(oauthToken, url, null, HaveUserResponse::class.java)
         }
 
         /**
@@ -43,7 +43,7 @@ private constructor() {
         fun getUserInDialogue(oauthToken: String, haveUserIdName: String): HaveUserResponse {
             val url = "$ROOT_URL/get"
             val dto = Dto(haveUserIdName)
-            return restTemplate.getWhenLogined(oauthToken, url, dto)
+            return restTemplate.getWhenLogined(oauthToken, url, dto, HaveUserResponse::class.java)
         }
 
         /**

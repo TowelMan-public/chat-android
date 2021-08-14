@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import towelman.server_on.net.chat_android.model.DialogueTalkRoomModel
 import towelman.server_on.net.chat_android.model.GroupTalkRoomModel
@@ -28,6 +29,8 @@ import java.lang.Short.decode
  * create an instance of this fragment.
  */
 class HomeFragment : Fragment() {
+    private lateinit var thisView: View
+    
     /**
      * このFragmentのUI等を生成するときの処理
      *
@@ -49,6 +52,7 @@ class HomeFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        thisView = view
 
         setSuccessDelegateToUpdater()
         setConfigToAllButton()
@@ -63,7 +67,7 @@ class HomeFragment : Fragment() {
         val updateManager = UpdateManager.getInstance()
         if(updateManager.isEnableUpdater(UpdateKeyConfig.TALK_ROOM_LIST)) {
             val talkRoomListUpdater = updateManager.getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
-            talkRoomListUpdater.successDelegateList.remove(javaClass.name)
+            talkRoomListUpdater.successDelegateList.remove(this::class.java.name)
         }
     }
 
@@ -119,15 +123,15 @@ class HomeFragment : Fragment() {
      */
     private fun setSuccessDelegateToUpdater(){
         val talkRoomUpdater = UpdateManager.getInstance().getUpdater(UpdateKeyConfig.TALK_ROOM_LIST) as TalkRoomUpdater
-        talkRoomUpdater.successDelegateList[javaClass.name] = {
-            val talkRoomListHasNoticeButtonWhenHasNoting = view!!.findViewById<Button>(R.id.talkRoomListHasNoticeButtonWhenHasNoting)
-            val talkRoomListHasNoticeButtonWhenHasMoreZero = view!!.findViewById<Button>(R.id.talkRoomListHasNoticeButtonWhenHasMoreZero)
+        talkRoomUpdater.successDelegateList[this::class.java.name] = {
+            val talkRoomListHasNoticeButtonWhenHasNoting = thisView.findViewById<ImageButton>(R.id.talkRoomListHasNoticeButtonWhenHasNoting)
+            val talkRoomListHasNoticeButtonWhenHasMoreZero = thisView.findViewById<ImageButton>(R.id.talkRoomListHasNoticeButtonWhenHasMoreZero)
             var noticeSum = 0
 
-            it!![DialogueTalkRoomModel::javaClass.name]!!.forEach { model ->
+            it!![DialogueTalkRoomModel::class.java.name]!!.forEach { model ->
                 noticeSum += model.noticeCount
             }
-            it[GroupTalkRoomModel::javaClass.name]!!.forEach { model ->
+            it[GroupTalkRoomModel::class.java.name]!!.forEach { model ->
                 noticeSum += model.noticeCount
             }
 
@@ -147,27 +151,27 @@ class HomeFragment : Fragment() {
      * このフラグメントの全てのボタンの設定をする
      */
     private fun setConfigToAllButton(){
-        view!!.findViewById<Button>(R.id.talkRoomListButton).setOnClickListener {
+        thisView.findViewById<ImageButton>(R.id.talkRoomListButton).setOnClickListener {
             showTalkRoomListFragment()
         }
 
-        view!!.findViewById<Button>(R.id.talkRoomListHasNoticeButtonWhenHasNoting).setOnClickListener {
+        thisView.findViewById<ImageButton>(R.id.talkRoomListHasNoticeButtonWhenHasNoting).setOnClickListener {
             showTalkRoomListHasNoticeButtonFragment()
         }
 
-        view!!.findViewById<Button>(R.id.talkRoomListHasNoticeButtonWhenHasMoreZero).setOnClickListener {
+        thisView.findViewById<ImageButton>(R.id.talkRoomListHasNoticeButtonWhenHasMoreZero).setOnClickListener {
             showTalkRoomListHasNoticeButtonFragment()
         }
 
-        view!!.findViewById<Button>(R.id.addDialogueButton).setOnClickListener {
+        thisView.findViewById<ImageButton>(R.id.addDialogueButton).setOnClickListener {
             showAddDialogueFragment()
         }
 
-        view!!.findViewById<Button>(R.id.makeGroupButton).setOnClickListener {
+        thisView.findViewById<ImageButton>(R.id.makeGroupButton).setOnClickListener {
             showMakeGroupFragment()
         }
 
-        view!!.findViewById<Button>(R.id.userConfigButton).setOnClickListener {
+        thisView.findViewById<ImageButton>(R.id.userConfigButton).setOnClickListener {
             showUserConfigFragment()
         }
     }
@@ -216,10 +220,4 @@ class HomeFragment : Fragment() {
         @JvmStatic
         fun newInstance() = HomeFragment()
     }
-
-    /*
-          メモ
-
-          ・通知有トークルームリストが存在するときの色: FF7700  ないときの色: 32C1ED
-     */
 }

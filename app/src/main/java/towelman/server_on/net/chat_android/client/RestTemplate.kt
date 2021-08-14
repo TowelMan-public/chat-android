@@ -1,11 +1,16 @@
 package towelman.server_on.net.chat_android.client
 
 import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.JavaType
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import okhttp3.*
 import towelman.server_on.net.chat_android.client.exception.NetworkOfflineException
 import java.io.IOException
+import java.util.*
+import kotlin.collections.LinkedHashMap
+
 
 /**
  * 外部からAPIを呼び出すのを支援するクラス。
@@ -58,13 +63,15 @@ class RestTemplate private constructor() {
      * @param url URL
      * @param parameter リクエストパラメター
      * @return レスポンス
+     *
+     * 参考: https://kazuhira-r.hatenablog.com/entry/2021/06/12/231251
      */
-    fun <Parameter, Response>getWhenLogined(oauthToken: String, url: String, parameter: Parameter): Response {
+    fun <Parameter, Response>getWhenLogined(oauthToken: String, url: String, parameter: Parameter, responseClass: Class<Response>): Response {
         val request = Request.Builder()
-            .url(url + createRequestParameterUrl(parameter))
-            .header(OAUTH_HEADER_NAME, oauthToken)
-            .get()
-            .build()
+                .url(url + createRequestParameterUrl(parameter))
+                .header(OAUTH_HEADER_NAME, oauthToken)
+                .get()
+                .build()
 
         try {
             val response = client.newCall(request).execute()
@@ -72,8 +79,51 @@ class RestTemplate private constructor() {
             restTemplateErrorHandler.checkErrorAndThrows(responseJson, response.code())
             return objectMapper
                     .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
-                    .readValue<Response>(responseJson, object : TypeReference<Response>() {})
+                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                    .readValue<Response>(responseJson, responseClass)
         } catch (_: IOException){
+            throw NetworkOfflineException()
+        }
+    }
+
+    /**
+     * ログインされているときに使うGET実行メソッド（List用）
+     * @param <Response> レスポンスの型
+     * @param <Parameter> パラメターの型
+     * @param oauthToken 認証用トークン
+     * @param url URL
+     * @param parameter リクエストパラメター
+     * @return レスポンス
+     *
+     * 参考: https://kazuhira-r.hatenablog.com/entry/2021/06/12/231251
+     */
+    fun <Parameter, ResponseInList>getListWhenLogined(oauthToken: String, url: String, parameter: Parameter, responseInListClass: Class<ResponseInList>): List<ResponseInList> {
+        val mutableResponseList: MutableList<ResponseInList> = mutableListOf()
+
+        val request = Request.Builder()
+                .url(url + createRequestParameterUrl(parameter))
+                .header(OAUTH_HEADER_NAME, oauthToken)
+                .get()
+                .build()
+
+        try {
+            val response = client.newCall(request).execute()
+            val responseJson = response.body()!!.string()
+            restTemplateErrorHandler.checkErrorAndThrows(responseJson, response.code())
+
+
+            objectMapper.readTree(responseJson).forEach {
+                val childJson = objectMapper.writeValueAsString(it)
+
+                val childResponse =  objectMapper
+                        .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
+                        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                        .readValue(childJson, responseInListClass)
+                
+                mutableResponseList.add(childResponse)
+            }
+            return  mutableResponseList
+        } catch (e: IOException){
             throw NetworkOfflineException()
         }
     }

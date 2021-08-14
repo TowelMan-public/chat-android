@@ -27,7 +27,7 @@ private constructor() {
          */
         fun getDesireUserList(oauthToken: String): List<DesireUserInGroupResponse> {
             val url = "$ROOT_URL/gets"
-            return restTemplate.getWhenLogined(oauthToken, url, null)
+            return restTemplate.getListWhenLogined(oauthToken, url, null, DesireUserInGroupResponse::class.java)
         }
 
         /**
@@ -41,7 +41,7 @@ private constructor() {
         fun getDesireUser(oauthToken: String, talkRoomId: Int): DesireUserInGroupResponse {
             val url = "$ROOT_URL/get"
             val dto = Dto(talkRoomId)
-            return restTemplate.getWhenLogined(oauthToken, url, dto)
+            return restTemplate.getWhenLogined(oauthToken, url, dto, DesireUserInGroupResponse::class.java)
         }
 
         /**

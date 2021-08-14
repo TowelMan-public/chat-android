@@ -56,7 +56,7 @@ private constructor() {
         fun getUsersInGroup(oauthToken: String, groupTalkRoomId: Int): List<UserInGroupResponse> {
             val url = "$ROOT_URL/gets"
             val dto = Dto(groupTalkRoomId, null)
-            return restTemplate.getWhenLogined(oauthToken, url, dto)
+            return restTemplate.getListWhenLogined(oauthToken, url, dto, UserInGroupResponse::class.java)
         }
 
         /**

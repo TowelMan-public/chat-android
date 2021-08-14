@@ -33,7 +33,7 @@ private constructor() {
         fun getGroup(oauthToken: String, talkRoomId: Int): GroupTalkRoomResponse {
             val url = "$ROOT_URL/get"
             val dto = Dto(talkRoomId, null, null, null)
-            return restTemplate.getWhenLogined(oauthToken, url, dto)
+            return restTemplate.getWhenLogined(oauthToken, url, dto, GroupTalkRoomResponse::class.java)
         }
 
         /**
@@ -43,7 +43,7 @@ private constructor() {
          */
         fun getGroups(oauthToken: String): List<GroupTalkRoomResponse> {
             val url = "$ROOT_URL/gets"
-            return restTemplate.getWhenLogined(oauthToken, url, null)
+            return restTemplate.getListWhenLogined(oauthToken, url, null, GroupTalkRoomResponse::class.java)
         }
 
         /**
@@ -75,7 +75,7 @@ private constructor() {
         fun getGroupTalks(oauthToken: String, talkRoomId: Int, startIndex: Int, maxSize: Int): List<TalkResponse> {
             val url = "$ROOT_URL/gets/talks"
             val dto = Dto(talkRoomId, null, startIndex, maxSize)
-            return restTemplate.getWhenLogined(oauthToken, url, dto)
+            return restTemplate.getListWhenLogined(oauthToken, url, dto, TalkResponse::class.java)
         }
 
         /**

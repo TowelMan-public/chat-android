@@ -13,13 +13,16 @@
             android:id="@+id/titleTextView"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="50sp" />
+            android:layout_height="match_parent"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeMaxTextSize="50sp"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"/>
         <TextView
             android:id="@+id/isOpenedTextVew"
             android:layout_weight="0.2"
             android:layout_width="0dp"
-            android:layout_height="fill_parent"
+            android:layout_height="match_parent"
             android:textAlignment="center"
             android:textSize="50sp"
             app:autoSizeTextType="uniform"

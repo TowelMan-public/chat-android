@@ -36,6 +36,7 @@ import javax.xml.validation.Validator
  * create an instance of this fragment.
  */
 class TalkListInTalkRoomFragment : Fragment() {
+    private lateinit var thisView: View
     private lateinit var talkRoomModel: TalkRoomModel
     private var newestIndex: Int = -1
     private var oldestIndex: Int = -1
@@ -55,30 +56,40 @@ class TalkListInTalkRoomFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        talkRoomModel = getTalkRoomModelByBundle(savedInstanceState!!)
-        isCreated = savedInstanceState.getBoolean("isCreated")
+        talkRoomModel = getTalkRoomModelByBundle(arguments!!)
+        isCreated = savedInstanceState?.getBoolean("isCreated") ?: arguments!!.getBoolean("isCreated")
     }
 
     /**
      * BundleからModelクラスを取得する
      *
-     * @param savedInstanceState 保存されているデータたち
+     * @param bundle 保存されているデータたち
      */
-    private fun getTalkRoomModelByBundle(savedInstanceState: Bundle): TalkRoomModel{
-        var parcelable = savedInstanceState.getParcelable<Parcelable>("DialogueTalkRoomModel")
-        if(parcelable != null)
-            return Parcels.unwrap<DialogueTalkRoomModel>(parcelable)
+    private fun getTalkRoomModelByBundle(bundle: Bundle): TalkRoomModel{
+        val model = if(bundle.getString("DialogueTalkRoomModel.haveUserIdName") != null){
+                        DialogueTalkRoomModel().apply {
+                            haveUserIdName = bundle.getString("DialogueTalkRoomModel.haveUserIdName")!!
+                        }
+                    }else if (bundle.get("GroupTalkRoomModel.groupTalkRoomId") != null){
+                        GroupTalkRoomModel().apply {
+                            groupTalkRoomId = bundle.getInt("GroupTalkRoomModel.groupTalkRoomId")
+                        }
+                    }
+                    else if(bundle.getString("DesireDialogueTalkRoomModel.haveUserIdName") != null){
+                        DesireDialogueTalkRoomModel().apply {
+                            haveUserIdName = bundle.getString("DesireDialogueTalkRoomModel.haveUserIdName")!!
+                        }
+                    }else{
+                        DesireGroupTalkRoomModel().apply {
+                            groupTalkRoomId = bundle.getInt("DesireGroupTalkRoomModel.groupTalkRoomId")
+                        }
+                    }
 
-        parcelable = savedInstanceState.getParcelable<Parcelable>("GroupTalkRoomModel")
-        if(parcelable != null)
-            return Parcels.unwrap<GroupTalkRoomModel>(parcelable)
+        model.name = bundle.getString("talkRoomModel.name")!!
+        model.lastTalkIndex = bundle.getInt("talkRoomModel.lastTalkIndex")
+        model.noticeCount = bundle.getInt("talkRoomModel.lastTalkIndex")
 
-        parcelable = savedInstanceState.getParcelable<Parcelable>("DesireDialogueTalkRoomModel")
-        if(parcelable != null)
-            return Parcels.unwrap<DesireDialogueTalkRoomModel>(parcelable)
-
-        parcelable = savedInstanceState.getParcelable<Parcelable>("DesireGroupTalkRoomModel")
-        return Parcels.unwrap<DesireGroupTalkRoomModel>(parcelable)
+        return model
     }
 
     /**
@@ -101,7 +112,7 @@ class TalkListInTalkRoomFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        val contentEditText = view!!.findViewById<EditText>(R.id.contentEditText)
+        val contentEditText = thisView.findViewById<EditText>(R.id.contentEditText)
 
         outState.putString("contentEditText.text", contentEditText.text.toString())
         outState.putBoolean("isCreated", true)
@@ -116,13 +127,14 @@ class TalkListInTalkRoomFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        thisView = view
 
         if(isCreated){
             val contentEditText = view.findViewById<EditText>(R.id.contentEditText)
             contentEditText.setText(savedInstanceState!!.getString("contentEditText.text"))
 
             view.findViewById<LinearLayout>(R.id.menuContainer).removeAllViews()
-            view.findViewById<ListTitleView>(R.id.talkListContainer).removeAllViews()
+            view.findViewById<TalkListTitleView>(R.id.talkListContainer).removeAllViews()
         }
 
         errorHandlingListForCoroutine = mainActivity.getExceptionHandlingListForCoroutine()
@@ -138,8 +150,8 @@ class TalkListInTalkRoomFragment : Fragment() {
      * タイトルの部分の設定をする
      */
     private fun setConfigToTitleTextView(){
-        val titleTextView = view!!.findViewById<TalkListTitleView>(R.id.titleTextView)
-        val menuContainer = view!!.findViewById<LinearLayout>(R.id.menuContainer)
+        val titleTextView = thisView.findViewById<TalkListTitleView>(R.id.talkListTitleView)
+        val menuContainer = thisView.findViewById<LinearLayout>(R.id.menuContainer)
 
         titleTextView.setTitleText(talkRoomModel.name)
         titleTextView.setOnClickListener {
@@ -156,7 +168,7 @@ class TalkListInTalkRoomFragment : Fragment() {
      * メニューViewの設定をする
      */
     private fun setMenuViewToMenuContainer(){
-        val menuContainer = view!!.findViewById<LinearLayout>(R.id.menuContainer)
+        val menuContainer = thisView.findViewById<LinearLayout>(R.id.menuContainer)
 
         val menuView: View =
             when (talkRoomModel) {
@@ -301,7 +313,7 @@ class TalkListInTalkRoomFragment : Fragment() {
      * @param isOlder 古いトークを追加で読み込むならtrue、そうでないのならfalseを指定する。デフォルトはfalse
      */
     private fun showTalkView(talkModel: TalkModel, isOlder: Boolean = false) {
-        val talkListContainer = view!!.findViewById<ListTitleView>(R.id.talkListContainer)
+        val talkListContainer = thisView.findViewById<TalkListTitleView>(R.id.talkListContainer)
 
         val talkView = TalkView(mainActivity).apply {
             setContentText(talkModel.contentText)
@@ -329,9 +341,9 @@ class TalkListInTalkRoomFragment : Fragment() {
      * @param talkView 対象のトークのView
      */
     private fun showTalkEditView(talkModel: TalkModel, talkView: TalkView){
-        val titleTextView = view!!.findViewById<TalkListTitleView>(R.id.titleTextView)
-        val editTextContainer = view!!.findViewById<LinearLayout>(R.id.editTextContainer)
-        val bodyContainer = view!!.findViewById<LinearLayout>(R.id.bodyContainer)
+        val titleTextView = thisView.findViewById<TalkListTitleView>(R.id.titleTextView)
+        val editTextContainer = thisView.findViewById<LinearLayout>(R.id.editTextContainer)
+        val bodyContainer = thisView.findViewById<LinearLayout>(R.id.bodyContainer)
 
         val talkEditView = TalkEditView(mainActivity).apply {
             contentText = talkModel.contentText
@@ -396,7 +408,7 @@ class TalkListInTalkRoomFragment : Fragment() {
      * @param talkIndex トークインデックス
      */
     private fun deleteTalk(talkView: TalkView, talkIndex: Int){
-        val talkListContainer = view!!.findViewById<ListTitleView>(R.id.talkListContainer)
+        val talkListContainer = thisView.findViewById<TalkListTitleView>(R.id.talkListContainer)
 
         mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(errorHandlingListForCoroutine.createCoroutineExceptionHandler()) {
@@ -420,9 +432,9 @@ class TalkListInTalkRoomFragment : Fragment() {
      * トーク編集Viewを閉じる
      */
     private fun closeTalkEditView(){
-        val titleTextView = view!!.findViewById<TalkListTitleView>(R.id.titleTextView)
-        val editTextContainer = view!!.findViewById<LinearLayout>(R.id.editTextContainer)
-        val bodyContainer = view!!.findViewById<LinearLayout>(R.id.bodyContainer)
+        val titleTextView = thisView.findViewById<TalkListTitleView>(R.id.titleTextView)
+        val editTextContainer = thisView.findViewById<LinearLayout>(R.id.editTextContainer)
+        val bodyContainer = thisView.findViewById<LinearLayout>(R.id.bodyContainer)
 
         editTextContainer.removeAllViews()
         editTextContainer.visibility = View.GONE
@@ -434,7 +446,7 @@ class TalkListInTalkRoomFragment : Fragment() {
      * もっと古いトークを読み込むボタンの設定をする
      */
     private fun setConfigToOlderLoadButton(){
-        val olderLoadButton = view!!.findViewById<Button>(R.id.olderLoadButton)
+        val olderLoadButton = thisView.findViewById<Button>(R.id.olderLoadButton)
 
         olderLoadButton.setOnClickListener {
             if(oldestIndex == -1)
@@ -448,7 +460,7 @@ class TalkListInTalkRoomFragment : Fragment() {
      * もっと新しいトークを読み込むボタンの設定をする
      */
     private fun setConfigToNewerLoadButton(){
-        val newerLoadButton = view!!.findViewById<Button>(R.id.newerLoadButton)
+        val newerLoadButton = thisView.findViewById<Button>(R.id.newerLoadButton)
 
         newerLoadButton.setOnClickListener {
             if(newestIndex == -1)
@@ -462,8 +474,8 @@ class TalkListInTalkRoomFragment : Fragment() {
      * 送信の設定をする
      */
     private fun setConfigToSendButton(){
-        val contentEditText = view!!.findViewById<EditText>(R.id.contentEditText)
-        val sendButton = view!!.findViewById<Button>(R.id.sendButton)
+        val contentEditText = thisView.findViewById<EditText>(R.id.contentEditText)
+        val sendButton = thisView.findViewById<Button>(R.id.sendButton)
 
         val sendBoxValidateManager = EditTextValidateManager().apply {
             add(EditTextValidator(contentEditText).apply {
@@ -512,14 +524,18 @@ class TalkListInTalkRoomFragment : Fragment() {
             TalkListInTalkRoomFragment().apply {
                 arguments = Bundle().apply {
                     //talkRoomModel
+                    putString("talkRoomModel.name", talkRoomModel.name)
+                    putInt("talkRoomModel.noticeCount", talkRoomModel.noticeCount)
+                    putInt("talkRoomModel.lastTalkIndex", talkRoomModel.lastTalkIndex)
+
                     if(talkRoomModel is DialogueTalkRoomModel)
-                        putParcelable("DialogueTalkRoomModel", Parcels.wrap(talkRoomModel))
+                        putString("DialogueTalkRoomModel.haveUserIdName", talkRoomModel.haveUserIdName)
                     if(talkRoomModel is GroupTalkRoomModel)
-                        putParcelable("GroupTalkRoomModel", Parcels.wrap(talkRoomModel))
+                        putInt("GroupTalkRoomModel.groupTalkRoomId", talkRoomModel.groupTalkRoomId)
                     if(talkRoomModel is DesireDialogueTalkRoomModel)
-                        putParcelable("DesireDialogueTalkRoomModel", Parcels.wrap(talkRoomModel))
+                        putString("DesireDialogueTalkRoomModel.haveUserIdName", talkRoomModel.haveUserIdName)
                     if(talkRoomModel is DesireGroupTalkRoomModel)
-                        putParcelable("DesireGroupTalkRoomModel", Parcels.wrap(talkRoomModel))
+                        putInt("DesireGroupTalkRoomModel.groupTalkRoomId", talkRoomModel.groupTalkRoomId)
 
                     putBoolean("isCreated", false)
                 }

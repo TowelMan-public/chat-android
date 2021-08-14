@@ -37,6 +37,7 @@ import towelman.server_on.net.chat_android.validate.NotBlankValidatable
  * create an instance of this fragment.
  */
 class GroupDetailsFragment : Fragment() {
+    private lateinit var thisView: View
     private var isCreated: Boolean = false
     private var groupTalkRoomId: Int = -1
 
@@ -79,6 +80,7 @@ class GroupDetailsFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        thisView = view
 
         if (isCreated)
             restoreInstanceState(savedInstanceState!!)
@@ -100,8 +102,8 @@ class GroupDetailsFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
-        val groupNameTextEdit = view!!.findViewById<TextView>(R.id.groupNameTextEdit)
-        val userIdNameForInvitationTextEdit = view!!.findViewById<TextView>(R.id.userIdNameForInvitationTextEdit)
+        val groupNameTextEdit = thisView.findViewById<TextView>(R.id.groupNameTextEdit)
+        val userIdNameForInvitationTextEdit = thisView.findViewById<TextView>(R.id.userIdNameForInvitationTextEdit)
 
         outState.putCharSequence("groupNameTextEdit.text", groupNameTextEdit.text)
         outState.putCharSequence("userIdNameForInvitationTextEdit.text", userIdNameForInvitationTextEdit.text)
@@ -122,8 +124,8 @@ class GroupDetailsFragment : Fragment() {
      * @param savedInstanceState このFragmentで保持するべき情報・状態
      */
     private fun restoreInstanceState(savedInstanceState: Bundle){
-        val groupNameTextEdit = view!!.findViewById<TextView>(R.id.groupNameTextEdit)
-        val userIdNameForInvitationTextEdit = view!!.findViewById<TextView>(R.id.userIdNameForInvitationTextEdit)
+        val groupNameTextEdit = thisView.findViewById<TextView>(R.id.groupNameTextEdit)
+        val userIdNameForInvitationTextEdit = thisView.findViewById<TextView>(R.id.userIdNameForInvitationTextEdit)
 
         groupNameTextEdit.text = savedInstanceState.getCharSequence("groupNameTextEdit.text")
         userIdNameForInvitationTextEdit.text = savedInstanceState.getCharSequence("userIdNameForInvitationTextEdit.text")
@@ -133,7 +135,7 @@ class GroupDetailsFragment : Fragment() {
      * 値をセットするべきViewたちに値をセットする
      */
     private fun setValueToAllView(){
-        val groupNameTextEdit = view!!.findViewById<TextView>(R.id.groupNameTextEdit)
+        val groupNameTextEdit = thisView.findViewById<TextView>(R.id.groupNameTextEdit)
 
         mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
@@ -160,8 +162,8 @@ class GroupDetailsFragment : Fragment() {
         userInGroupViewUpdater.exceptionHandlingList = mainActivity.getExceptionHandlingListForCoroutine()
 
         //成功時の処理
-        userInGroupViewUpdater.successDelegateList[javaClass.name] = {
-            val userInGroupContainer = view!!.findViewById<LinearLayout>(R.id.userInGroupContainer)
+        userInGroupViewUpdater.successDelegateList[this::class.java.name] = {
+            val userInGroupContainer = thisView.findViewById<LinearLayout>(R.id.userInGroupContainer)
             userInGroupContainer.removeAllViews()
 
             //Viewたちを表示・設定
@@ -194,7 +196,7 @@ class GroupDetailsFragment : Fragment() {
         if(userIdName == mainActivity.accountManager.userIdName)
             return
 
-        val userInGroupContainer = view!!.findViewById<LinearLayout>(R.id.userInGroupContainer)
+        val userInGroupContainer = thisView.findViewById<LinearLayout>(R.id.userInGroupContainer)
 
         mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
@@ -211,8 +213,8 @@ class GroupDetailsFragment : Fragment() {
      * グループ名を変更するボタンの設定
      */
     private fun setConfigToChangeGroupNameButton(){
-        val groupNameChangeButton = view!!.findViewById<Button>(R.id.groupNameChangeButton)
-        val groupNameTextEdit = view!!.findViewById<EditText>(R.id.groupNameTextEdit)
+        val groupNameChangeButton = thisView.findViewById<Button>(R.id.groupNameChangeButton)
+        val groupNameTextEdit = thisView.findViewById<EditText>(R.id.groupNameTextEdit)
 
         //バリデーションチェックの設定
         val validateManager = EditTextValidateManager().apply {
@@ -243,7 +245,7 @@ class GroupDetailsFragment : Fragment() {
      * グループを削除することを促す文章がクリックされたときの設定
      */
     private fun setConfigToDeleteGroupTextView(){
-        val deleteGroupTextView = view!!.findViewById<TextView>(R.id.deleteGroupTextView)
+        val deleteGroupTextView = thisView.findViewById<TextView>(R.id.deleteGroupTextView)
 
         deleteGroupTextView.setOnClickListener {
             mainActivity.startShowingProgressBar()
@@ -262,7 +264,7 @@ class GroupDetailsFragment : Fragment() {
      * グループから脱退することを促す文章をクリックしたときのイベント
      */
     private fun setConfigToExitGroupTextView(){
-        val exitGroupTextView = view!!.findViewById<TextView>(R.id.exitGroupTextView)
+        val exitGroupTextView = thisView.findViewById<TextView>(R.id.exitGroupTextView)
 
         exitGroupTextView.setOnClickListener {
             mainActivity.startShowingProgressBar()
@@ -281,8 +283,8 @@ class GroupDetailsFragment : Fragment() {
      * グループに勧誘するボタンの設定
      */
     private fun setConfigToInvitationGroupButton(){
-        val invitationToGroupButton = view!!.findViewById<Button>(R.id.invitationToGroupButton)
-        val userIdNameForInvitationTextEdit = view!!.findViewById<EditText>(R.id.userIdNameForInvitationTextEdit)
+        val invitationToGroupButton = thisView.findViewById<Button>(R.id.invitationToGroupButton)
+        val userIdNameForInvitationTextEdit = thisView.findViewById<EditText>(R.id.userIdNameForInvitationTextEdit)
 
         //バリデーションチェックの設定
         val validateManager = EditTextValidateManager().apply {

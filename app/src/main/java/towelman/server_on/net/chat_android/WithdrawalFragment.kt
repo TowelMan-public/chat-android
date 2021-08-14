@@ -19,6 +19,7 @@ import towelman.server_on.net.chat_android.service.UserRestService
  * create an instance of this fragment.
  */
 class WithdrawalFragment : Fragment() {
+    private lateinit var thisView: View
     private val homeFragment: HomeFragment
         get() = parentFragment as HomeFragment
     private val mainActivity: MainActivity
@@ -44,6 +45,7 @@ class WithdrawalFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        thisView = view
 
         setConfigToWithdrawalButton()
         setConfigToBackButton()
@@ -53,7 +55,7 @@ class WithdrawalFragment : Fragment() {
      * 退会するボタンの設定
      */
     private fun setConfigToWithdrawalButton(){
-        val withdrawalButton = view!!.findViewById<Button>(R.id.withdrawalButton)
+        val withdrawalButton = thisView.findViewById<Button>(R.id.withdrawalButton)
 
         withdrawalButton.setOnClickListener {
             mainActivity.startShowingProgressBar()
@@ -61,8 +63,9 @@ class WithdrawalFragment : Fragment() {
                 withContext(Dispatchers.Default) {
                     UserRestService.withdrawal(mainActivity.accountManager.getOauthToken())
                 }
+                mainActivity.finishForLogout()
             }
-            mainActivity.finishForLogout()
+
             mainActivity.stopShowingProgressBar()
         }
     }
@@ -71,7 +74,7 @@ class WithdrawalFragment : Fragment() {
      * 戻るボタンの設定
      */
     private fun setConfigToBackButton(){
-        val backButton = view!!.findViewById<Button>(R.id.backButton)
+        val backButton = thisView.findViewById<Button>(R.id.backButton)
 
         backButton.setOnClickListener {
             homeFragment.showUserConfigFragment()

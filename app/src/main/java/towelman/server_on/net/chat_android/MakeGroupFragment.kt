@@ -29,6 +29,7 @@ import towelman.server_on.net.chat_android.validate.NotBlankValidatable
  * create an instance of this fragment.
  */
 class MakeGroupFragment : Fragment() {
+    private lateinit var thisView: View
 
     /**
      * このFragmentのActivityにアクセスしやすいようにするためのプロパティー
@@ -55,6 +56,7 @@ class MakeGroupFragment : Fragment() {
      */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        thisView = view
 
         val groupNameEditText = view.findViewById<EditText>(R.id.groupNameTextEdit)
         val makeGroupButton = view.findViewById<Button>(R.id.makeGroupButton)
@@ -101,7 +103,7 @@ class MakeGroupFragment : Fragment() {
      */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val groupNameEditText = view!!.findViewById<EditText>(R.id.groupNameTextEdit)
+        val groupNameEditText = thisView.findViewById<EditText>(R.id.groupNameTextEdit)
         outState.putCharSequence("groupNameEditText.text", groupNameEditText.text)
     }
 

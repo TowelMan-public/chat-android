@@ -34,7 +34,7 @@ private constructor() {
         fun getDialogueTalks(oauthToken: String, userIdName: String, maxSize: Int, startIndex: Int): List<TalkResponse> {
             val url = "$ROOT_URL/gets/talks"
             val dto = Dto(userIdName, maxSize, startIndex)
-            return restTemplate.getWhenLogined(oauthToken, url, dto)
+            return restTemplate.getListWhenLogined(oauthToken, url, dto, TalkResponse::class.java)
         }
 
         /**

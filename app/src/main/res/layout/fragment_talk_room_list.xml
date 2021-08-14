@@ -7,14 +7,15 @@
 
     <ScrollView
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="UselessParent">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
 
-            <towelman.server_on.net.chat_android.ListTitleView
+            <towelman.server_on.net.chat_android.TitleView
                 android:id="@+id/dialogueTalkRoomListContainerTitle"
                 android:background="@drawable/normal_border"
                 android:layout_width="fill_parent"
@@ -27,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
 
-            <towelman.server_on.net.chat_android.ListTitleView
+            <towelman.server_on.net.chat_android.TitleView
                 android:id="@+id/groupTalkRoomListContainerTitle"
                 android:background="@drawable/normal_border"
                 android:layout_width="fill_parent"
@@ -40,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
 
-            <towelman.server_on.net.chat_android.ListTitleView
+            <towelman.server_on.net.chat_android.TitleView
                 android:id="@+id/desireDialogueTalkRoomListContainerTitle"
                 android:background="@drawable/normal_border"
                 android:layout_width="fill_parent"
@@ -53,7 +54,7 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"/>
 
-            <towelman.server_on.net.chat_android.ListTitleView
+            <towelman.server_on.net.chat_android.TitleView
                 android:id="@+id/desireGroupTalkRoomListContainerTitle"
                 android:background="@drawable/normal_border"
                 android:layout_width="fill_parent"

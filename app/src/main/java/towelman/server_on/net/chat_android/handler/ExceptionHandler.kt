@@ -1,5 +1,9 @@
 package towelman.server_on.net.chat_android.handler
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.lang.reflect.ParameterizedType
 
 /**
@@ -31,13 +35,15 @@ class ExceptionHandler constructor(val runDelegate: (exception: Exception) -> Bo
         inline fun <reified E> newIncense(crossinline runDelegate: (exception: E) -> Unit): ExceptionHandler{
             return ExceptionHandler {
                     if(it is E) {
-                        try {
-                            runDelegate(it)
-                            true
+                        var isSuccess = true
+                        CoroutineScope(Dispatchers.Main + Job()).launch() {
+                            try {
+                                runDelegate(it)
+                            } catch (_: Exception) {
+                                isSuccess = false
+                            }
                         }
-                        catch (_: Exception){
-                            false
-                        }
+                        isSuccess
                     }
                     else
                         false

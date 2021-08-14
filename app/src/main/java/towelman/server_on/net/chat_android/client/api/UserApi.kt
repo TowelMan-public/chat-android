@@ -58,7 +58,7 @@ private constructor() {
         fun getUser(oauthToken: String, userIdName: String): UserEntity {
             val url = "$ROOT_URL/get"
             val dto = Dto(null, userIdName, null)
-            return restTemplate.getWhenLogined(oauthToken, url, dto)
+            return restTemplate.getWhenLogined(oauthToken, url, dto, UserEntity::class.java)
         }
 
         /**
