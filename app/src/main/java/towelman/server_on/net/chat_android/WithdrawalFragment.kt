@@ -58,15 +58,14 @@ class WithdrawalFragment : Fragment() {
         val withdrawalButton = thisView.findViewById<Button>(R.id.withdrawalButton)
 
         withdrawalButton.setOnClickListener {
-            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
+                mainActivity.startShowingProgressBar()
                 withContext(Dispatchers.Default) {
                     UserRestService.withdrawal(mainActivity.accountManager.getOauthToken())
                 }
                 mainActivity.finishForLogout()
+                mainActivity.stopShowingProgressBar()
             }
-
-            mainActivity.stopShowingProgressBar()
         }
     }
 

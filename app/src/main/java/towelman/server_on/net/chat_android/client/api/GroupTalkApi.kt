@@ -88,6 +88,6 @@ private constructor() {
         /**
          * グループトーク単体に関するAPIのパラメターを送るためのDtoクラス
          */
-        class Dto(val groupTalkRoomId: Int?, val talkContentText: String?, val talkIndex: Int?)
+        class Dto(val talkRoomId: Int?, val talkContentText: String?, val talkIndex: Int?)
     }
 }

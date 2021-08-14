@@ -105,10 +105,12 @@ class UserConfigFragment : Fragment() {
         userIdNameEditText.setText(mainActivity.accountManager.userIdName)
 
         CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
+            mainActivity.startShowingProgressBar()
             val userName = withContext(Dispatchers.Default) {
                 UserRestService.getUserName(mainActivity.accountManager.getOauthToken(), mainActivity.accountManager.userIdName)
             }
             userNameTextEdit.setText(userName, TextView.BufferType.NORMAL)
+            mainActivity.stopShowingProgressBar()
         }
     }
 
@@ -153,6 +155,7 @@ class UserConfigFragment : Fragment() {
                                 .setTitle("失敗")
                                 .setMessage("あなたが指定したユーザーIDは既に使われています。ほかのものをご検討ください。")
                                 .show()
+                        mainActivity.stopShowingProgressBar()
                     }
             )
         }
@@ -165,15 +168,15 @@ class UserConfigFragment : Fragment() {
             }
 
             //処理
-            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(exceptionHandlerList.createCoroutineExceptionHandler()) {
+                mainActivity.startShowingProgressBar()
                 withContext(Dispatchers.Default) {
                     UserRestService.changeUserIdName(mainActivity.accountManager.getOauthToken(), userIdNameEditText.text.toString())
                 }
 
                 mainActivity.accountManager.userIdName = userIdNameEditText.text.toString()
+                mainActivity.stopShowingProgressBar()
             }
-            mainActivity.stopShowingProgressBar()
         }
     }
 
@@ -200,13 +203,13 @@ class UserConfigFragment : Fragment() {
             }
 
             //処理
-            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
+                mainActivity.startShowingProgressBar()
                 withContext(Dispatchers.Default) {
                     UserRestService.changeUserName(mainActivity.accountManager.getOauthToken(), userNameTextEdit.text.toString())
                 }
+                mainActivity.stopShowingProgressBar()
             }
-            mainActivity.stopShowingProgressBar()
         }
     }
 
@@ -239,8 +242,8 @@ class UserConfigFragment : Fragment() {
             }
 
             //処理
-            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
+                mainActivity.startShowingProgressBar()
                 withContext(Dispatchers.Default) {
                     UserRestService.changePassword(mainActivity.accountManager.getOauthToken(), passwordTextEdit.text.toString())
                 }
@@ -248,8 +251,8 @@ class UserConfigFragment : Fragment() {
                 mainActivity.accountManager.password = passwordTextEdit.text.toString()
                 passwordTextEdit.setText("", TextView.BufferType.NORMAL)
                 oneMorePasswordTextEdit.setText("", TextView.BufferType.NORMAL)
+                mainActivity.stopShowingProgressBar()
             }
-            mainActivity.stopShowingProgressBar()
         }
     }
 

@@ -10,5 +10,5 @@
         android:topLeftRadius="15dp"/>
 
     <solid
-        android:color="#434343"/>
+        android:color="#D3D3D3"/>
 </shape>

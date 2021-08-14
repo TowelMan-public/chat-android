@@ -46,7 +46,7 @@ private constructor(){
          * @return グループトークモデルリスト
          */
         fun getGroupTalkList(oauthToken: String, myUserIdName: String, groupTalkRoomId: Int, startIndex: Int, maxSize: Int): MutableList<TalkModel>{
-            val entityList = GroupApi.getGroupTalks(oauthToken, groupTalkRoomId, maxSize, startIndex)
+            val entityList = GroupApi.getGroupTalks(oauthToken, groupTalkRoomId, startIndex, maxSize)
             val modelList: MutableList<TalkModel> = mutableListOf()
 
             entityList.forEach{

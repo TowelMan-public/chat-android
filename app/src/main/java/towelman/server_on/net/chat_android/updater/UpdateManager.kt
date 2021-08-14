@@ -97,9 +97,9 @@ class UpdateManager {
     fun deleteUpdaterAll(){
         optionMap.forEach{
             handler.removeCallbacks(it.value.runnable)
-            optionMap.remove(it.key)
-            updaterMap.remove(it.key)
         }
+        optionMap.clear()
+        updaterMap.clear()
     }
 
     companion object{

@@ -158,19 +158,19 @@ class SignupFragment : Fragment() {
             AlertDialog.Builder(loginAndSignupActivity)
                 .setTitle("失敗")
                 .setMessage("あなたが指定したユーザーIDは既に使われています。ほかのものをご検討ください。")
-                //.setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
                 .show()
+            loginAndSignupActivity.stopShowingProgressBar()
         }
 
         //処理
-        loginAndSignupActivity.startShowingProgressBar()
         CoroutineScope(loginAndSignupActivity.coroutineContext).launch(handlerList.createCoroutineExceptionHandler()) {
+            loginAndSignupActivity.startShowingProgressBar()
             withContext(Dispatchers.Default) {
                 UserRestService.signup(userIdName, userName, password)
             }
             loginAndSignupActivity.showLoginFragment()
+            loginAndSignupActivity.stopShowingProgressBar()
         }
-        loginAndSignupActivity.stopShowingProgressBar()
     }
 
     companion object {

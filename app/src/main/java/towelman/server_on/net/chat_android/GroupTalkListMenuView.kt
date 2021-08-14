@@ -10,7 +10,7 @@ import android.widget.TextView
  */
 class GroupTalkListMenuView(context: Context) : LinearLayout(context) {
     init{
-        View.inflate(context, R.layout.dialogue_talk_list_menu_vuew, this)
+        View.inflate(context, R.layout.group_talk_list_menu_view, this)
     }
 
     /**

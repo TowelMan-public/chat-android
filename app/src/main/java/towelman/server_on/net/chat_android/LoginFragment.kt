@@ -150,21 +150,21 @@ class LoginFragment : Fragment() {
             AlertDialog.Builder(loginAndSignupActivity)
                 .setTitle("失敗")
                 .setMessage("ログインに失敗しました。ユーザーIDとパスワードをご確認ください。")
-                //.setPositiveButton(DateTimePatternGenerator.PatternInfo.OK, null)
                 .show()
+            loginAndSignupActivity.stopShowingProgressBar()
         }
 
         //処理
-        loginAndSignupActivity.startShowingProgressBar()
         CoroutineScope(loginAndSignupActivity.coroutineContext).launch(handlerList.createCoroutineExceptionHandler()) {
+            loginAndSignupActivity.startShowingProgressBar()
             withContext(Dispatchers.Default) {
                 UserRestService.login(userIdName, password)
             }
 
             loginAndSignupActivity.accountManager.addAccount(userIdName, password)
             loginAndSignupActivity.transitionMainActivity()
+            loginAndSignupActivity.stopShowingProgressBar()
         }
-        loginAndSignupActivity.stopShowingProgressBar()
     }
 
     companion object {

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 
 /**
  * トーク単体のView
@@ -41,9 +42,11 @@ class TalkView(context: Context) : LinearLayout(context) {
         val senderUserNameTextView = findViewById<TextView>(R.id.senderUserNameTextView)
         val thisContainer = findViewById<LinearLayout>(R.id.thisContainer)
         val talkContainer = findViewById<LinearLayout>(R.id.talkContainer)
+        val talkContentTextView = findViewById<TextView>(R.id.talkContentTextView)
 
         senderUserNameTextView.setText(userName, TextView.BufferType.NORMAL)
         senderUserNameTextView.visibility = VISIBLE
+        talkContentTextView.background = ResourcesCompat.getDrawable(resources, R.drawable.your_talk_background, null)
 
         thisContainer.setHorizontalGravity(Gravity.START)
         talkContainer.setHorizontalGravity(Gravity.START)

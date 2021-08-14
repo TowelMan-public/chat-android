@@ -6,4 +6,4 @@ import org.parceler.Parcel
 /**
  * トークのモデルクラス
  */
-class TalkModel(val talkIndex: Int, val SenderUserName: String, val isMyTalk: Boolean, val contentText: String, val timestamp: String)
+class TalkModel(val talkIndex: Int, val SenderUserName: String, val isMyTalk: Boolean, var contentText: String, val timestamp: String)

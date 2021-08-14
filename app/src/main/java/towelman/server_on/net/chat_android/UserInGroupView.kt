@@ -11,7 +11,17 @@ import android.widget.TextView
  */
 class UserInGroupView(context: Context): LinearLayout(context) {
     init {
-        View.inflate(context, R.layout.talk_view, this)
+        View.inflate(context, R.layout.user_in_group_view, this)
+    }
+
+    /**
+     * 削除ボタンの表示状態をセットする
+     *
+     * @param visibility 表示状態
+     */
+    fun setDeleteButtonVisibility(visibility: Int){
+        val deleteButton = findViewById<Button>(R.id.deleteButton)
+        deleteButton.visibility = visibility
     }
 
     /**

@@ -126,29 +126,33 @@ class AddDialogueFragment : Fragment() {
                     .setTitle("失敗")
                     .setMessage("既に友達追加されているユーザーが指定されました。もう一度ご確認ください。")
                     .show()
+                mainActivity.stopShowingProgressBar()
             } + ExceptionHandler.newIncense<NotFoundException>{
                 if(it.isErrorFieldUserIdName()) {
                     AlertDialog.Builder(mainActivity)
                         .setTitle("失敗")
                         .setMessage("あなたが指定したユーザーIDは存在しません。もう一度ご確認ください。")
                         .show()
+                    mainActivity.stopShowingProgressBar()
                 }else{
+                    mainActivity.stopShowingProgressBar()
                     throw it
                 }
             }
         )
 
         //処理
-        mainActivity.startShowingProgressBar()
+
         CoroutineScope(mainActivity.coroutineContext).launch(exceptionHandlingListForCoroutine.createCoroutineExceptionHandler()) {
+            mainActivity.startShowingProgressBar()
             withContext(Dispatchers.Default) {
                 DialogueRestService.addDialogue(mainActivity.accountManager.getOauthToken(), userIdName)
             }
 
             Toast.makeText(context , "${userIdName}さんを友達登録しました。", Toast.LENGTH_LONG).show()
             UpdateManager.getInstance().getUpdater(UpdateKeyConfig.TALK_ROOM_LIST).runUpdate()
+            mainActivity.stopShowingProgressBar()
         }
-        mainActivity.stopShowingProgressBar()
     }
 
     companion object {

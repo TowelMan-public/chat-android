@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".GroupDetailsFragment">
 
     <RelativeLayout
@@ -51,7 +52,11 @@
                         android:layout_weight="0.2"
                         android:layout_height="match_parent"
                         android:text="@string/change"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        app:autoSizeMinTextSize="8sp"
+                        app:autoSizeMaxTextSize="20sp"
+                        app:autoSizeStepGranularity="2sp"
+                        app:autoSizeTextType="uniform"/>
 
                 </LinearLayout>
 
@@ -100,7 +105,11 @@
                         android:layout_weight="0.2"
                         android:layout_height="match_parent"
                         android:text="@string/invitation"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        app:autoSizeMinTextSize="8sp"
+                        app:autoSizeMaxTextSize="20sp"
+                        app:autoSizeStepGranularity="2sp"
+                        app:autoSizeTextType="uniform"/>
 
                 </LinearLayout>
 

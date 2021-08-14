@@ -114,8 +114,8 @@ class MakeGroupFragment : Fragment() {
      */
     private fun makeGroup(groupName: String){
         //処理
-        mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
+            mainActivity.startShowingProgressBar()
             withContext(Dispatchers.Default) {
                 GroupRestService.makeGroup(mainActivity.accountManager.getOauthToken(), groupName)
             }
@@ -123,7 +123,6 @@ class MakeGroupFragment : Fragment() {
             Toast.makeText(context , "グループを${groupName}という名前で作成しました", Toast.LENGTH_LONG).show()
             UpdateManager.getInstance().getUpdater(UpdateKeyConfig.TALK_ROOM_LIST).runUpdate()
         }
-        mainActivity.stopShowingProgressBar()
     }
 
     companion object {

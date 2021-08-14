@@ -29,6 +29,16 @@ open class Updater<T>: UpdaterInterface{
     val successDelegateList: MutableMap<String, (model: T?) -> Unit> = mutableMapOf()
 
     /**
+     * 更新の前処理
+     */
+    var beforeUpdateDelegate: (() -> Unit)? = null
+
+    /**
+     * 更新の後処理
+     */
+    var afterUpdateDelegate: (() -> Unit)? = null
+
+    /**
      * 更新処理に失敗したときに実行する例外ハンドリングリストである。更新処理(updateDelegate)に
      * 例外ハンドリングを含まないと指定した理由はここで指定してほしかったからである。
      */
@@ -41,14 +51,16 @@ open class Updater<T>: UpdaterInterface{
      */
     override fun runUpdate(): Boolean{
         var isSuccess = true
-        CoroutineScope(Dispatchers.Main + Job()).launch() {
+        CoroutineScope(Dispatchers.Main).launch() {
             try {
+                beforeUpdateDelegate?.let { it() }
                 withContext(Dispatchers.Default) {
                     model = updateDelegate()
                 }
                 successDelegateList.forEach {
                     it.value(model)
                 }
+                afterUpdateDelegate?.let { it() }
             }
             catch (e: Exception){
                 exceptionHandlingList.handlingAll(e)

@@ -18,10 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import towelman.server_on.net.chat_android.account.AccountManagerAdapterForTowelman
 import towelman.server_on.net.chat_android.client.exception.HttpException
 import towelman.server_on.net.chat_android.client.exception.NetworkOfflineException
@@ -72,10 +69,10 @@ class MainActivity : AppCompatActivity() {
     /**
      * このActivityが終了するときに実行される
      */
-    override fun onStop() {
-        super.onStop()
-
+    override fun onDestroy() {
         UpdateManager.getInstance().deleteUpdaterAll()
+
+        coroutineContext.cancel(null)
 
         //サービスの開始
         if(accountManager.haveAccount) {
@@ -91,6 +88,8 @@ class MainActivity : AppCompatActivity() {
                     }.build()
             scheduler.schedule(jobInfo)
         }
+
+        super.onDestroy()
     }
 
     /**
@@ -117,6 +116,7 @@ class MainActivity : AppCompatActivity() {
                     .setMessage("予期しないエラーが発生しました。これまでに行われた操作は一部、あるいはすべてが無効、不正になっている可能性があります。" +
                             "このエラーが続く場合は開発者にこのエラーが発生したことを、状況等を細かく伝えてください。")
                     .show()
+            stopShowingProgressBar()
         } + ExceptionHandler.newIncense<HttpException>{ exception ->
             AlertDialog.Builder(this)
                     .setTitle("通信エラー")
@@ -124,11 +124,13 @@ class MainActivity : AppCompatActivity() {
                             "このエラーが続く場合は開発者にこのエラーが発生したことを、状況等を細かく伝えてください。\n" +
                             "ステータスコード: ${exception.httpStatusCode}")
                     .show()
+            stopShowingProgressBar()
         } + ExceptionHandler.newIncense<NetworkOfflineException>{
             AlertDialog.Builder(this)
                     .setTitle("通信エラー")
                     .setMessage("ネットーワークで障害が発生しました。このエラーは本体がネットにつながってないと発生することがあります")
                     .show()
+            stopShowingProgressBar()
         }
 
         return handlerList
@@ -170,6 +172,14 @@ class MainActivity : AppCompatActivity() {
         talkRoomUpdater.successDelegateList[this::class.java.name] = {
             val notificationManager = this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             TalkRoomListNoticeJobService.pushNotice(this, notificationManager, it!!)
+        }
+
+        talkRoomUpdater.beforeUpdateDelegate = {
+            startShowingProgressBar()
+        }
+
+        talkRoomUpdater.afterUpdateDelegate = {
+            stopShowingProgressBar()
         }
 
         showNotification(this, this.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager, 1, "test")

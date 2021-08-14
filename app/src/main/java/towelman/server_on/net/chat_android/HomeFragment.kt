@@ -11,9 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
-import towelman.server_on.net.chat_android.model.DialogueTalkRoomModel
-import towelman.server_on.net.chat_android.model.GroupTalkRoomModel
-import towelman.server_on.net.chat_android.model.TalkRoomModel
+import towelman.server_on.net.chat_android.model.*
 import towelman.server_on.net.chat_android.updater.TalkRoomUpdater
 import towelman.server_on.net.chat_android.updater.UpdateKeyConfig
 import towelman.server_on.net.chat_android.updater.UpdateManager
@@ -133,6 +131,12 @@ class HomeFragment : Fragment() {
             }
             it[GroupTalkRoomModel::class.java.name]!!.forEach { model ->
                 noticeSum += model.noticeCount
+            }
+            it[DesireDialogueTalkRoomModel::class.java.name]!!.forEach { model ->
+                noticeSum++
+            }
+            it[DesireGroupTalkRoomModel::class.java.name]!!.forEach { model ->
+                noticeSum++
             }
 
             if(noticeSum == 0){

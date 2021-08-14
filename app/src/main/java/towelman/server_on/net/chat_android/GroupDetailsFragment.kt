@@ -5,15 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import towelman.server_on.net.chat_android.client.entity.UserInGroupResponse
 import towelman.server_on.net.chat_android.client.exception.AlreadyInsertedGroupDesireException
 import towelman.server_on.net.chat_android.client.exception.AlreadyInsertedGroupException
@@ -113,9 +107,9 @@ class GroupDetailsFragment : Fragment() {
      * このフラグメントが壊されるときの処理
      */
     override fun onDestroy() {
-        super.onDestroy()
-
         UpdateManager.getInstance().deleteUpdater(UpdateKeyConfig.USER_IN_GROUP_LIST)
+
+        super.onDestroy()
     }
 
     /**
@@ -137,14 +131,14 @@ class GroupDetailsFragment : Fragment() {
     private fun setValueToAllView(){
         val groupNameTextEdit = thisView.findViewById<TextView>(R.id.groupNameTextEdit)
 
-        mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
+            mainActivity.startShowingProgressBar()
             val groupName = withContext(Dispatchers.Default) {
                 GroupRestService.getGroupName(mainActivity.accountManager.getOauthToken(), groupTalkRoomId)
             }
             groupNameTextEdit.setText(groupName, TextView.BufferType.NORMAL)
+            mainActivity.stopShowingProgressBar()
         }
-        mainActivity.stopShowingProgressBar()
     }
 
     /**
@@ -156,6 +150,14 @@ class GroupDetailsFragment : Fragment() {
         //更新処理
         userInGroupViewUpdater.updateDelegate = {
             GroupRestService.getUserInGroupList(mainActivity.accountManager.getOauthToken(), groupTalkRoomId)
+        }
+
+        userInGroupViewUpdater.beforeUpdateDelegate = {
+            mainActivity.startShowingProgressBar()
+        }
+
+        userInGroupViewUpdater.afterUpdateDelegate = {
+            mainActivity.stopShowingProgressBar()
         }
 
         //例外ハンドラー
@@ -174,10 +176,14 @@ class GroupDetailsFragment : Fragment() {
                     setOnDeleteButtonClickListener(View.OnClickListener{
                         deleteUserInGroup(this, response.userIdName)
                     })
+
+                    if(response.userIdName == mainActivity.accountManager.userIdName)
+                        setDeleteButtonVisibility(View.INVISIBLE)
                 }
 
                 userInGroupContainer.addView(userInGroupView)
             }
+            mainActivity.stopShowingProgressBar()
         }
 
         //登録
@@ -198,11 +204,12 @@ class GroupDetailsFragment : Fragment() {
 
         val userInGroupContainer = thisView.findViewById<LinearLayout>(R.id.userInGroupContainer)
 
-        mainActivity.startShowingProgressBar()
         CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
+            mainActivity.startShowingProgressBar()
             withContext(Dispatchers.Default) {
                 GroupRestService.deleteUserInGroup(mainActivity.accountManager.getOauthToken(), groupTalkRoomId, userIdName)
             }
+            mainActivity.stopShowingProgressBar()
         }
 
         userInGroupContainer.removeView(userInGroupView)
@@ -231,13 +238,14 @@ class GroupDetailsFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            mainActivity.startShowingProgressBar()
             CoroutineScope(mainActivity.coroutineContext).launch(mainActivity.getExceptionHandlingListForCoroutine().createCoroutineExceptionHandler()) {
+                mainActivity.startShowingProgressBar()
                 withContext(Dispatchers.Default) {
                     GroupRestService.changeGroupName(mainActivity.accountManager.getOauthToken(), groupTalkRoomId, groupNameTextEdit.text.toString())
                 }
+                mainActivity.stopShowingProgressBar()
+                Toast.makeText(context , "グループ名を変更しました", Toast.LENGTH_LONG).show()
             }
-            mainActivity.stopShowingProgressBar()
         }
     }
 
@@ -303,12 +311,14 @@ class GroupDetailsFragment : Fragment() {
                                 .setTitle("失敗")
                                 .setMessage("あなたが指定したユーザーIDは既に加入しています。")
                                 .show()
+                        mainActivity.stopShowingProgressBar()
                     } +
                     ExceptionHandler.newIncense<AlreadyInsertedGroupDesireException> {
                         AlertDialog.Builder(mainActivity)
                                 .setTitle("失敗")
                                 .setMessage("あなたが指定したユーザーは既に勧誘中です。勧誘を受けるまでお待ちください。")
                                 .show()
+                        mainActivity.stopShowingProgressBar()
                     } +
                     ExceptionHandler.newIncense<NotFoundException> {
                         if(!it.isErrorFieldUserIdName())
@@ -318,6 +328,7 @@ class GroupDetailsFragment : Fragment() {
                                 .setTitle("失敗")
                                 .setMessage("あなたが指定したユーザーIDは存在しません。もう一度ご確認ください。")
                                 .show()
+                        mainActivity.stopShowingProgressBar()
                     }
             )
         }
@@ -329,14 +340,18 @@ class GroupDetailsFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            mainActivity.startShowingProgressBar()
+
             CoroutineScope(mainActivity.coroutineContext).launch(exceptionHandlerList.createCoroutineExceptionHandler()) {
+                mainActivity.startShowingProgressBar()
                 withContext(Dispatchers.Default) {
                     GroupRestService.invitationUserToGroup(mainActivity.accountManager.getOauthToken(),
                             groupTalkRoomId, userIdNameForInvitationTextEdit.text.toString())
                 }
+
+                userIdNameForInvitationTextEdit.setText("", TextView.BufferType.NORMAL)
+                Toast.makeText(context , "ユーザーを勧誘しました", Toast.LENGTH_LONG).show()
+                mainActivity.stopShowingProgressBar()
             }
-            mainActivity.stopShowingProgressBar()
         }
     }
 
